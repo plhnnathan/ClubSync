@@ -1,4 +1,32 @@
+# Dependencies
 node_modules/
+
+# Build output
 dist/
+
+# Environment variables
 .env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# TypeScript cache
 *.js.map
+*.tsbuildinfo
+
+# Jest coverage
+coverage/
+
+# VS Code
+.vscode/
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Docker volumes (dados locais)
+mongo-data/
