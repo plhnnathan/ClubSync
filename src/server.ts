@@ -5,6 +5,7 @@ import connectDB from "./config/database";
 import authRoutes from "./routes/auth.routes";
 import playerRoutes from "./routes/player.routes";
 import matchReportRoutes from "./routes/matchReport.routes";
+import setupSwagger from "./config/swagger";
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ app.get("/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/players", playerRoutes);
 app.use("/api/match-reports", matchReportRoutes);
+
+setupSwagger(app);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route not found." });
