@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: clubsync-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - clubsync_data:/data/db
+
+volumes:
+  clubsync_data:
