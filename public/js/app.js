@@ -1,18 +1,25 @@
-let currentTheme = localStorage.getItem("theme") || "dark";
+let currentTheme = localStorage.getItem("theme") || "light";
 
 function applyTheme() {
-  const btn = document.getElementById("themeBtn");
   if (currentTheme === "light") {
     document.body.classList.add("light");
-    if (btn) btn.textContent = "🌙";
+    document.body.classList.remove("dark");
   } else {
     document.body.classList.remove("light");
-    if (btn) btn.textContent = "☀️";
+    document.body.classList.add("dark");
   }
+  const navBtn = document.getElementById("themeBtn");
+  if (navBtn) navBtn.textContent = currentTheme === "light" ? "🌙" : "☀️";
+  updateAuthThemeBtn();
+}
+
+function updateAuthThemeBtn() {
+  const authBtn = document.getElementById("authThemeBtn");
+  if (authBtn) authBtn.textContent = currentTheme === "light" ? "🌙" : "☀️";
 }
 
 function toggleTheme() {
-  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  currentTheme = currentTheme === "light" ? "dark" : "light";
   localStorage.setItem("theme", currentTheme);
   applyTheme();
 }

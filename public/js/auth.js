@@ -15,10 +15,12 @@ function renderLogin() {
   document.getElementById("app").innerHTML = `
     <div class="auth-wrapper">
       <div class="auth-box">
+        <div class="auth-theme-toggle">
+          <button id="authThemeBtn" onclick="toggleTheme()"></button>
+        </div>
         <div class="auth-logo">⚽</div>
         <h1 class="auth-title">ClubSync</h1>
         <p class="auth-subtitle">${t("login_subtitle")}</p>
-
         <div class="form-group">
           <label>${t("login_email")}</label>
           <input type="email" id="loginEmail" placeholder="you@club.com" autocomplete="email" />
@@ -27,14 +29,14 @@ function renderLogin() {
           <label>${t("login_password")}</label>
           <input type="password" id="loginPassword" placeholder="••••••" autocomplete="current-password" />
         </div>
-
-        <button class="btn btn-primary" style="width:100%" id="loginBtn">${t("login_btn")}</button>
+        <button class="btn btn-primary" id="loginBtn">${t("login_btn")}</button>
         <p class="auth-divider">
           ${t("login_toggle")} <a onclick="renderRegister()">${t("login_toggle_link")}</a>
         </p>
       </div>
     </div>`;
 
+  updateAuthThemeBtn();
   document.getElementById("loginBtn").addEventListener("click", doLogin);
   document.getElementById("loginPassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") doLogin();
@@ -45,10 +47,12 @@ function renderRegister() {
   document.getElementById("app").innerHTML = `
     <div class="auth-wrapper">
       <div class="auth-box">
+        <div class="auth-theme-toggle">
+          <button id="authThemeBtn" onclick="toggleTheme()"></button>
+        </div>
         <div class="auth-logo">⚽</div>
         <h1 class="auth-title">ClubSync</h1>
         <p class="auth-subtitle">${t("register_subtitle")}</p>
-
         <div class="form-group">
           <label>${t("register_name")}</label>
           <input type="text" id="regName" placeholder="Nathan Silva" autocomplete="name" />
@@ -65,14 +69,14 @@ function renderRegister() {
           <label>${t("register_club")}</label>
           <input type="text" id="regClub" placeholder="FC ClubSync" />
         </div>
-
-        <button class="btn btn-primary" style="width:100%" id="registerBtn">${t("register_btn")}</button>
+        <button class="btn btn-primary" id="registerBtn">${t("register_btn")}</button>
         <p class="auth-divider">
           ${t("register_toggle")} <a onclick="renderLogin()">${t("register_toggle_link")}</a>
         </p>
       </div>
     </div>`;
 
+  updateAuthThemeBtn();
   document.getElementById("registerBtn").addEventListener("click", doRegister);
 }
 
