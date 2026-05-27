@@ -1,3 +1,22 @@
+let currentTheme = localStorage.getItem("theme") || "dark";
+
+function applyTheme() {
+  const btn = document.getElementById("themeBtn");
+  if (currentTheme === "light") {
+    document.body.classList.add("light");
+    if (btn) btn.textContent = "🌙";
+  } else {
+    document.body.classList.remove("light");
+    if (btn) btn.textContent = "☀️";
+  }
+}
+
+function toggleTheme() {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", currentTheme);
+  applyTheme();
+}
+
 function navigate(view) {
   if (!authToken) {
     renderLogin();
@@ -15,7 +34,7 @@ function navigate(view) {
   if (currentUser) {
     const roleLabel =
       currentUser.role === "admin" ? t("role_admin") : t("role_analyst");
-    navUser.innerHTML = `${currentUser.name} <span class="badge badge-${currentUser.role === "admin" ? "green" : "blue"}" style="font-size:.7rem">${roleLabel}</span>`;
+    navUser.innerHTML = `${currentUser.name} <span class="badge badge-${currentUser.role === "admin" ? "green" : "blue"}" style="font-size:.65rem">${roleLabel}</span>`;
   }
 
   applyI18n();
@@ -25,15 +44,20 @@ function navigate(view) {
     players: renderPlayers,
     reports: renderReports,
   };
+
   if (views[view]) views[view]();
 }
 
-// Event listeners
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("langBtn").textContent =
-    currentLang === "en" ? "🌐 PT-BR" : "🌐 EN";
+  applyTheme();
 
-  document.getElementById("langBtn").addEventListener("click", toggleLang);
+  const langBtn = document.getElementById("langBtn");
+  const themeBtn = document.getElementById("themeBtn");
+
+  langBtn.textContent = currentLang === "en" ? "🌐 PT-BR" : "🌐 EN";
+
+  themeBtn.addEventListener("click", toggleTheme);
+  langBtn.addEventListener("click", toggleLang);
 
   document.querySelector(".btn-logout").addEventListener("click", logout);
 

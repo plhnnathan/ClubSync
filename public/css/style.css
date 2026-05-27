@@ -30,16 +30,34 @@
   --transition: 0.18s ease;
 }
 
+body.light {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface2: #f3f4f6;
+  --surface3: #e5e7eb;
+  --border: #d1d5db;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  --red-dim: #fee2e2;
+  --green-dim: #dcfce7;
+  --blue-dim: #dbeafe;
+  --yellow-dim: #fef9c3;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: "Segoe UI", system-ui, sans-serif;
+  font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.5;
+  transition:
+    background var(--transition),
+    color var(--transition);
 }
 
 .hidden {
@@ -59,6 +77,9 @@ body {
   padding: 0 2rem;
   gap: 1rem;
   backdrop-filter: blur(8px);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .nav-brand {
@@ -66,10 +87,11 @@ body {
   align-items: center;
   gap: 0.5rem;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--green);
   letter-spacing: -0.3px;
   white-space: nowrap;
+  font-family: "Montserrat", sans-serif;
 }
 
 .nav-logo {
@@ -87,14 +109,16 @@ body {
   background: none;
   border: none;
   color: var(--text-muted);
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
   padding: 0.45rem 0.9rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition:
     background var(--transition),
     color var(--transition);
+  letter-spacing: 0.02em;
 }
 
 .nav-btn:hover {
@@ -104,7 +128,7 @@ body {
 .nav-btn.active {
   background: var(--surface2);
   color: var(--green);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .nav-right {
@@ -120,6 +144,25 @@ body {
   max-width: 160px;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.btn-theme {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.85rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition:
+    border-color var(--transition),
+    background var(--transition);
+  line-height: 1.5;
+}
+
+.btn-theme:hover {
+  border-color: var(--green);
 }
 
 .btn-lang {
@@ -127,6 +170,8 @@ body {
   border: 1px solid var(--border);
   color: var(--text);
   font-size: 0.8rem;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
   padding: 0.3rem 0.7rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -142,10 +187,12 @@ body {
   border: 1px solid var(--red);
   color: var(--red);
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
   padding: 0.3rem 0.8rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  letter-spacing: 0.03em;
   transition:
     background var(--transition),
     color var(--transition);
@@ -173,29 +220,35 @@ body {
 
 .page-title {
   font-size: 1.45rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.3px;
+  font-family: "Montserrat", sans-serif;
 }
 
 .page-subtitle {
   font-size: 0.88rem;
   color: var(--text-muted);
   margin-top: 0.2rem;
+  font-weight: 500;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
   padding: 0.55rem 1.1rem;
   border-radius: var(--radius-md);
   border: none;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.03em;
   cursor: pointer;
   transition:
     opacity var(--transition),
-    transform var(--transition);
+    transform var(--transition),
+    background var(--transition);
 }
 
 .btn:active {
@@ -209,9 +262,11 @@ body {
 .btn-primary {
   background: var(--green);
   color: #000;
+  text-transform: uppercase;
 }
 .btn-primary:hover {
   background: var(--green-dark);
+  color: #fff;
 }
 
 .btn-danger {
@@ -241,8 +296,9 @@ body {
 
 .btn-sm {
   padding: 0.28rem 0.65rem;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   border-radius: var(--radius-sm);
+  letter-spacing: 0.02em;
 }
 
 .card {
@@ -251,16 +307,21 @@ body {
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   margin-bottom: 1.25rem;
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .card-title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
   color: var(--green);
   margin-bottom: 1.1rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  letter-spacing: 0.02em;
 }
 
 .stats-grid {
@@ -278,7 +339,8 @@ body {
   text-align: center;
   transition:
     border-color var(--transition),
-    transform var(--transition);
+    transform var(--transition),
+    background var(--transition);
 }
 
 .stat-card:hover {
@@ -288,17 +350,19 @@ body {
 
 .stat-number {
   font-size: 2.6rem;
-  font-weight: 800;
+  font-weight: 900;
+  font-family: "Montserrat", sans-serif;
   color: var(--green);
   line-height: 1;
   margin-bottom: 0.35rem;
 }
 
 .stat-label {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
 }
 
 .table-wrap {
@@ -314,13 +378,15 @@ table {
 thead th {
   background: var(--surface2);
   color: var(--text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: "Montserrat", sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   padding: 0.75rem 1rem;
   text-align: left;
   white-space: nowrap;
+  transition: background var(--transition);
 }
 
 thead th:first-child {
@@ -334,6 +400,8 @@ tbody td {
   padding: 0.8rem 1rem;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  font-weight: 500;
+  transition: background var(--transition);
 }
 
 tbody tr:last-child td {
@@ -353,10 +421,12 @@ tbody tr:hover td {
   display: inline-block;
   padding: 0.2rem 0.65rem;
   border-radius: 99px;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.04em;
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .badge-green {
@@ -369,7 +439,7 @@ tbody tr:hover td {
 }
 .badge-yellow {
   background: var(--yellow-dim);
-  color: #fcd34d;
+  color: #d97706;
 }
 .badge-blue {
   background: var(--blue-dim);
@@ -378,6 +448,19 @@ tbody tr:hover td {
 .badge-gray {
   background: var(--surface2);
   color: var(--text-muted);
+}
+
+body.light .badge-green {
+  color: #059669;
+}
+body.light .badge-red {
+  color: #dc2626;
+}
+body.light .badge-yellow {
+  color: #d97706;
+}
+body.light .badge-blue {
+  color: #2563eb;
 }
 
 .form-group {
@@ -391,10 +474,13 @@ tbody tr:hover td {
 
 label {
   display: block;
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
   color: var(--text-muted);
   margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 input,
@@ -407,9 +493,12 @@ textarea {
   padding: 0.6rem 0.85rem;
   border-radius: var(--radius-md);
   font-size: 0.92rem;
-  font-family: inherit;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
   outline: none;
-  transition: border-color var(--transition);
+  transition:
+    border-color var(--transition),
+    background var(--transition);
 }
 
 input:focus,
@@ -438,8 +527,9 @@ select option {
   gap: 0.6rem;
   padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
-  font-size: 0.88rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: "Montserrat", sans-serif;
   margin-bottom: 1rem;
   animation: slideIn 0.2s ease;
 }
@@ -466,7 +556,13 @@ select option {
   color: #34d399;
 }
 
-/* ─── Auth ───────────────────────────────────────── */
+body.light .alert-error {
+  color: #dc2626;
+}
+body.light .alert-success {
+  color: #059669;
+}
+
 .auth-wrapper {
   display: flex;
   align-items: center;
@@ -483,18 +579,23 @@ select option {
   width: 100%;
   max-width: 420px;
   box-shadow: var(--shadow);
+  transition:
+    background var(--transition),
+    border-color var(--transition);
 }
 
 .auth-logo {
   text-align: center;
-  font-size: 2.8rem;
+  font-size: 3rem;
   margin-bottom: 0.5rem;
 }
 
 .auth-title {
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 900;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: -0.5px;
   margin-bottom: 0.3rem;
 }
 
@@ -502,19 +603,36 @@ select option {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.88rem;
+  font-weight: 500;
   margin-bottom: 2rem;
+}
+
+.auth-box .btn-primary {
+  display: block;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+  margin-top: 0.25rem;
 }
 
 .auth-divider {
   text-align: center;
   color: var(--text-muted);
   font-size: 0.85rem;
+  font-weight: 500;
   margin-top: 1.2rem;
 }
 
 .auth-divider a {
   color: var(--green);
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
 }
@@ -560,6 +678,7 @@ select option {
   overflow-y: auto;
   box-shadow: var(--shadow);
   animation: slideUp 0.18s ease;
+  transition: background var(--transition);
 }
 
 @keyframes slideUp {
@@ -585,6 +704,8 @@ select option {
 .modal-title {
   font-size: 1.05rem;
   font-weight: 700;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 0.02em;
 }
 
 .modal-close {
@@ -607,6 +728,7 @@ select option {
   color: var(--text-muted);
   padding: 3rem 1rem;
   font-size: 0.95rem;
+  font-weight: 500;
 }
 
 .loading::after {
@@ -628,10 +750,12 @@ select option {
   }
 }
 
-.rating-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.rating-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 99px;
+  overflow: hidden;
 }
 
 .rating-fill {
@@ -639,14 +763,6 @@ select option {
   border-radius: 99px;
   background: var(--green);
   transition: width 0.4s ease;
-}
-
-.rating-track {
-  flex: 1;
-  height: 6px;
-  background: var(--surface3);
-  border-radius: 99px;
-  overflow: hidden;
 }
 
 @media (max-width: 768px) {
