@@ -23,7 +23,7 @@ function renderLogin() {
         <p class="auth-subtitle">${t("login_subtitle")}</p>
         <div class="form-group">
           <label>${t("login_email")}</label>
-          <input type="email" id="loginEmail" placeholder="you@club.com" autocomplete="email" />
+          <input type="email" id="loginEmail" placeholder="gmail.@club.com" autocomplete="email" />
         </div>
         <div class="form-group">
           <label>${t("login_password")}</label>
@@ -55,11 +55,11 @@ function renderRegister() {
         <p class="auth-subtitle">${t("register_subtitle")}</p>
         <div class="form-group">
           <label>${t("register_name")}</label>
-          <input type="text" id="regName" placeholder="Nathan Silva" autocomplete="name" />
+          <input type="text" id="regName" placeholder="Hulk Paraiba" autocomplete="name" />
         </div>
         <div class="form-group">
           <label>${t("register_email")}</label>
-          <input type="email" id="regEmail" placeholder="you@club.com" autocomplete="email" />
+          <input type="email" id="regEmail" placeholder="you@gmail..com" autocomplete="email" />
         </div>
         <div class="form-group">
           <label>${t("register_password")}</label>
