@@ -24,10 +24,23 @@ function toggleTheme() {
   applyTheme();
 }
 
-function navigate(view) {
+async function navigate(view) {
   if (!authToken) {
     renderLogin();
     return;
+  }
+
+  if (!localStorage.getItem("clubColor")) {
+    try {
+      const { data } = await request("GET", "/club");
+      if (data.primaryColor) {
+        localStorage.setItem("clubColor", data.primaryColor);
+        localStorage.setItem("clubLogo", data.logoUrl || "");
+        localStorage.setItem("clubName", data.name || "ClubSync");
+        applyPrimaryColor(data.primaryColor);
+        updateNavBrand(data.logoUrl, data.name);
+      }
+    } catch (_) {}
   }
 
   document.getElementById("navbar").classList.remove("hidden");
@@ -58,6 +71,14 @@ function navigate(view) {
 
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme();
+
+  // Apply saved club color and brand
+  const savedColor = localStorage.getItem("clubColor");
+  const savedLogo = localStorage.getItem("clubLogo");
+  const savedName = localStorage.getItem("clubName");
+
+  if (savedColor) applyPrimaryColor(savedColor);
+  if (savedName && authToken) updateNavBrand(savedLogo || "", savedName);
 
   const langBtn = document.getElementById("langBtn");
   const themeBtn = document.getElementById("themeBtn");

@@ -87,6 +87,8 @@ const translations = {
     settings_analyst_added: "Analyst added successfully!",
     settings_readonly: "Only admins can edit club settings.",
     nav_settings: "Settings",
+    settings_color_tip:
+      "This color will be applied across the entire interface.",
   },
   pt: {
     nav_dashboard: "Painel",
@@ -176,6 +178,7 @@ const translations = {
     settings_analyst_added: "Analista adicionado com sucesso!",
     settings_readonly: "Apenas administradores podem editar as configurações.",
     nav_settings: "Configurações",
+    settings_color_tip: "Esta cor será aplicada em toda a interface.",
   },
 };
 
