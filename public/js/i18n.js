@@ -234,7 +234,7 @@ function toggleLang() {
   localStorage.setItem("lang", currentLang);
 
   const btn = document.getElementById("langBtn");
-  if (btn) btn.textContent = currentLang === "pt" ? "🌐 PT-BR" : "🌐 EN";
+  if (btn) btn.textContent = currentLang === "en" ? "🌐 PT-BR" : "🌐 EN";
 
   applyI18n();
 
