@@ -138,6 +138,22 @@ function updateColorPreview() {
   const secondary =
     document.getElementById("clubSecondaryText")?.value || "#3b82f6";
 
+  // Ensure minimum contrast for dark backgrounds
+  function ensureContrast(hex, bgLuminance) {
+    const lum = getLuminance(hex);
+    // If color is too dark for dark bg, lighten it for display only
+    if (bgLuminance < 0.3 && lum < 0.15) {
+      return shadeColor(hex, 60); // lighten 60% for preview
+    }
+    return hex;
+  }
+
+  const primaryOnDark = ensureContrast(primary, 0.1);
+  const secondaryOnDark = ensureContrast(secondary, 0.1);
+
+  const primaryText = getLuminance(primary) > 0.4 ? "#000" : "#fff";
+  const secondaryText = getLuminance(secondary) > 0.4 ? "#000" : "#fff";
+
   const lightPreview = document.getElementById("colorPreviewLight");
   const darkPreview = document.getElementById("colorPreviewDark");
 
@@ -145,15 +161,15 @@ function updateColorPreview() {
     lightPreview.style.background = "#f0f2f5";
     lightPreview.innerHTML = `
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
-        <div style="width:22px;height:22px;background:${primary};border-radius:4px"></div>
-        <span style="font-weight:700;color:${primary};font-size:.95rem">ClubSync</span>
+        <div style="width:22px;height:22px;background:${primary};border-radius:4px;border:1px solid rgba(0,0,0,.1)"></div>
+        <span style="font-weight:700;color:${primary};font-size:.9rem">ClubSync</span>
       </div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <span style="background:${primary};color:${getLuminance(primary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">PRIMARY</span>
-        <span style="background:${secondary};color:${getLuminance(secondary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">SECONDARY</span>
-        <span style="background:#f3f4f6;border:1px solid #d1d5db;color:#111827;padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">NEUTRAL</span>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <span style="background:${primary};color:${primaryText};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">PRIMARY</span>
+        <span style="background:${secondary};color:${secondaryText};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">SECONDARY</span>
+        <span style="background:#f3f4f6;border:1px solid #d1d5db;color:#111827;padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">NEUTRAL</span>
       </div>
-      <div style="margin-top:.75rem;height:6px;border-radius:99px;background:#e5e7eb;overflow:hidden">
+      <div style="height:6px;border-radius:99px;background:#e5e7eb;overflow:hidden">
         <div style="width:70%;height:100%;background:${primary};border-radius:99px"></div>
       </div>`;
   }
@@ -162,16 +178,16 @@ function updateColorPreview() {
     darkPreview.style.background = "#111827";
     darkPreview.innerHTML = `
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
-        <div style="width:22px;height:22px;background:${primary};border-radius:4px"></div>
-        <span style="font-weight:700;color:${primary};font-size:.95rem">ClubSync</span>
+        <div style="width:22px;height:22px;background:${primaryOnDark};border-radius:4px;border:1px solid rgba(255,255,255,.1)"></div>
+        <span style="font-weight:700;color:${primaryOnDark};font-size:.9rem">ClubSync</span>
       </div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-        <span style="background:${primary};color:${getLuminance(primary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">PRIMARY</span>
-        <span style="background:${secondary};color:${getLuminance(secondary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">SECONDARY</span>
-        <span style="background:#1f2937;border:1px solid #374151;color:#f9fafb;padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">NEUTRAL</span>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
+        <span style="background:${primaryOnDark};color:${getLuminance(primaryOnDark) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">PRIMARY</span>
+        <span style="background:${secondaryOnDark};color:${getLuminance(secondaryOnDark) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">SECONDARY</span>
+        <span style="background:#1f2937;border:1px solid #374151;color:#f9fafb;padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">NEUTRAL</span>
       </div>
-      <div style="margin-top:.75rem;height:6px;border-radius:99px;background:#374151;overflow:hidden">
-        <div style="width:70%;height:100%;background:${primary};border-radius:99px"></div>
+      <div style="height:6px;border-radius:99px;background:#374151;overflow:hidden">
+        <div style="width:70%;height:100%;background:${primaryOnDark};border-radius:99px"></div>
       </div>`;
   }
 }
