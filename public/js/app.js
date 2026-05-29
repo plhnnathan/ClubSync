@@ -75,7 +75,6 @@ async function navigate(view) {
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme();
 
-  // Apply saved club branding
   const savedColor = localStorage.getItem("clubColor");
   const savedSecondary = localStorage.getItem("clubSecondary");
   const savedLogo = localStorage.getItem("clubLogo");
