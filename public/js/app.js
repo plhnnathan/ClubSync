@@ -50,6 +50,7 @@ function navigate(view) {
     dashboard: renderDashboard,
     players: renderPlayers,
     reports: renderReports,
+    settings: renderSettings,
   };
 
   if (views[view]) views[view]();

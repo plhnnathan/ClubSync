@@ -3,6 +3,8 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IClub extends Document {
   name: string;
   slug: string;
+  logoUrl?: string;
+  primaryColor?: string;
   createdAt: Date;
 }
 
@@ -19,6 +21,16 @@ const ClubSchema = new Schema<IClub>(
       unique: true,
       lowercase: true,
       trim: true,
+    },
+    logoUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    primaryColor: {
+      type: String,
+      trim: true,
+      default: "#00c853",
     },
   },
   { timestamps: true },
