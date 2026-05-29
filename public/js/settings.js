@@ -13,15 +13,13 @@ function getLuminance(hex) {
 function shadeColor(hex, percent) {
   const { r, g, b } = hexToRgb(hex);
   const clamp = (v) => Math.min(255, Math.max(0, v));
-  const nr = clamp(
-    r + (percent < 0 ? (r * percent) / 100 : ((255 - r) * percent) / 100),
-  );
-  const ng = clamp(
-    g + (percent < 0 ? (g * percent) / 100 : ((255 - g) * percent) / 100),
-  );
-  const nb = clamp(
-    b + (percent < 0 ? (b * percent) / 100 : ((255 - b) * percent) / 100),
-  );
+  const adjust = (c) =>
+    clamp(
+      c + (percent < 0 ? (c * percent) / 100 : ((255 - c) * percent) / 100),
+    );
+  const nr = adjust(r),
+    ng = adjust(g),
+    nb = adjust(b);
   return `#${Math.round(nr).toString(16).padStart(2, "0")}${Math.round(ng).toString(16).padStart(2, "0")}${Math.round(nb).toString(16).padStart(2, "0")}`;
 }
 
@@ -45,16 +43,41 @@ function applyPrimaryColor(hex) {
   }
 
   style.textContent = `
-    .btn-primary                     { color: ${textOnColor} !important; }
-    .nav-brand                       { color: var(--green)   !important; }
-    .card-title                      { color: var(--green)   !important; }
-    .stat-number                     { color: var(--green)   !important; }
-    .nav-btn.active                  { color: var(--green)   !important; }
-    .auth-divider a                  { color: var(--green)   !important; }
-    .badge-green                     { background: var(--green-dim) !important; }
-    input:focus, select:focus        { border-color: var(--green)   !important; }
-    .stat-card:hover                 { border-color: var(--green)   !important; }
-    .club-logo-preview:hover         { border-color: var(--green)   !important; }
+    .btn-primary                  { color: ${textOnColor} !important; }
+    .nav-brand                    { color: var(--green) !important; }
+    .card-title                   { color: var(--green) !important; }
+    .stat-number                  { color: var(--green) !important; }
+    .nav-btn.active               { color: var(--green) !important; }
+    .auth-divider a               { color: var(--green) !important; }
+    .badge-green                  { background: var(--green-dim) !important; }
+    input:focus, select:focus     { border-color: var(--green) !important; }
+    .stat-card:hover              { border-color: var(--green) !important; }
+    .club-logo-preview:hover      { border-color: var(--green) !important; }
+    .nav-btn:hover                { color: var(--green) !important; }
+  `;
+}
+
+function applySecondaryColor(hex) {
+  if (!hex || !/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
+  document.documentElement.style.setProperty("--blue", hex);
+  document.documentElement.style.setProperty(
+    "--blue-dim",
+    shadeColor(hex, -70),
+  );
+
+  const luminance = getLuminance(hex);
+  const textOnColor = luminance > 0.4 ? "#000000" : "#ffffff";
+
+  let style = document.getElementById("dynamic-secondary-style");
+  if (!style) {
+    style = document.createElement("style");
+    style.id = "dynamic-secondary-style";
+    document.head.appendChild(style);
+  }
+
+  style.textContent = `
+    .btn-info              { color: ${textOnColor} !important; }
+    .badge-blue            { background: var(--blue-dim) !important; }
   `;
 }
 
@@ -71,7 +94,8 @@ function previewLogo(url) {
   if (!preview) return;
   const name = document.getElementById("clubName")?.value || "";
   preview.innerHTML = url
-    ? `<img src="${url}" alt="${name}" class="club-logo-img" onerror="this.style.display='none'" />
+    ? `<img src="${url}" alt="${name}" class="club-logo-img"
+        onerror="this.style.display='none'" />
        <div class="club-logo-name">${name}</div>`
     : `<div class="club-logo-placeholder">⚽</div>
        <div class="club-logo-name">${name}</div>`;
@@ -81,6 +105,7 @@ function previewColor(value) {
   const textInput = document.getElementById("clubColorText");
   if (textInput) textInput.value = value;
   applyPrimaryColor(value);
+  updateColorPreview();
 }
 
 function syncColorPicker(value) {
@@ -88,6 +113,66 @@ function syncColorPicker(value) {
     const picker = document.getElementById("clubColor");
     if (picker) picker.value = value;
     applyPrimaryColor(value);
+    updateColorPreview();
+  }
+}
+
+function previewSecondary(value) {
+  const textInput = document.getElementById("clubSecondaryText");
+  if (textInput) textInput.value = value;
+  applySecondaryColor(value);
+  updateColorPreview();
+}
+
+function syncSecondaryPicker(value) {
+  if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+    const picker = document.getElementById("clubSecondary");
+    if (picker) picker.value = value;
+    applySecondaryColor(value);
+    updateColorPreview();
+  }
+}
+
+function updateColorPreview() {
+  const primary = document.getElementById("clubColorText")?.value || "#00c853";
+  const secondary =
+    document.getElementById("clubSecondaryText")?.value || "#3b82f6";
+
+  const lightPreview = document.getElementById("colorPreviewLight");
+  const darkPreview = document.getElementById("colorPreviewDark");
+
+  if (lightPreview) {
+    lightPreview.style.background = "#f0f2f5";
+    lightPreview.innerHTML = `
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
+        <div style="width:22px;height:22px;background:${primary};border-radius:4px"></div>
+        <span style="font-weight:700;color:${primary};font-size:.95rem">ClubSync</span>
+      </div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        <span style="background:${primary};color:${getLuminance(primary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">PRIMARY</span>
+        <span style="background:${secondary};color:${getLuminance(secondary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">SECONDARY</span>
+        <span style="background:#f3f4f6;border:1px solid #d1d5db;color:#111827;padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">NEUTRAL</span>
+      </div>
+      <div style="margin-top:.75rem;height:6px;border-radius:99px;background:#e5e7eb;overflow:hidden">
+        <div style="width:70%;height:100%;background:${primary};border-radius:99px"></div>
+      </div>`;
+  }
+
+  if (darkPreview) {
+    darkPreview.style.background = "#111827";
+    darkPreview.innerHTML = `
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
+        <div style="width:22px;height:22px;background:${primary};border-radius:4px"></div>
+        <span style="font-weight:700;color:${primary};font-size:.95rem">ClubSync</span>
+      </div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        <span style="background:${primary};color:${getLuminance(primary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">PRIMARY</span>
+        <span style="background:${secondary};color:${getLuminance(secondary) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">SECONDARY</span>
+        <span style="background:#1f2937;border:1px solid #374151;color:#f9fafb;padding:.2rem .7rem;border-radius:99px;font-size:.75rem;font-weight:700">NEUTRAL</span>
+      </div>
+      <div style="margin-top:.75rem;height:6px;border-radius:99px;background:#374151;overflow:hidden">
+        <div style="width:70%;height:100%;background:${primary};border-radius:99px"></div>
+      </div>`;
   }
 }
 
@@ -103,6 +188,8 @@ async function renderSettings() {
     const club = clubRes.data;
     const members = membersRes.data;
     const isAdmin = currentUser.role === "admin";
+    const primaryColor = club.primaryColor || "#00c853";
+    const secondaryColor = club.secondaryColor || "#3b82f6";
 
     document.getElementById("app").innerHTML = `
       <div class="page-header">
@@ -137,40 +224,46 @@ async function renderSettings() {
 
           <div class="form-group">
             <label>${t("settings_logo_url")}</label>
-            <input
-              type="url"
-              id="clubLogo"
-              value="${club.logoUrl || ""}"
+            <input type="url" id="clubLogo" value="${club.logoUrl || ""}"
               placeholder="https://example.com/logo.png"
-              oninput="previewLogo(this.value)"
-            />
-            <p style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem">
-              ${t("settings_logo_tip")}
-            </p>
+              oninput="previewLogo(this.value)" />
+            <p class="field-tip">${t("settings_logo_tip")}</p>
           </div>
 
           <div class="form-group">
             <label>${t("settings_color")}</label>
-            <div style="display:flex;gap:.75rem;align-items:center">
-              <input
-                type="color"
-                id="clubColor"
-                value="${club.primaryColor || "#00c853"}"
-                style="width:48px;height:38px;padding:.1rem;cursor:pointer;border-radius:6px;border:1px solid var(--border)"
-                oninput="previewColor(this.value)"
-              />
-              <input
-                type="text"
-                id="clubColorText"
-                value="${club.primaryColor || "#00c853"}"
+            <div class="color-input-row">
+              <input type="color" id="clubColor" value="${primaryColor}"
+                oninput="previewColor(this.value)" />
+              <input type="text" id="clubColorText" value="${primaryColor}"
                 placeholder="#00c853"
-                style="flex:1"
-                oninput="syncColorPicker(this.value)"
-              />
+                oninput="syncColorPicker(this.value)" />
             </div>
-            <p style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem">
-              ${t("settings_color_tip")}
-            </p>
+            <p class="field-tip">${t("settings_color_tip")}</p>
+          </div>
+
+          <div class="form-group">
+            <label>${t("settings_secondary")}</label>
+            <div class="color-input-row">
+              <input type="color" id="clubSecondary" value="${secondaryColor}"
+                oninput="previewSecondary(this.value)" />
+              <input type="text" id="clubSecondaryText" value="${secondaryColor}"
+                placeholder="#3b82f6"
+                oninput="syncSecondaryPicker(this.value)" />
+            </div>
+            <p class="field-tip">${t("settings_secondary_tip")}</p>
+          </div>
+
+          <!-- Color Preview -->
+          <div class="color-preview-grid">
+            <div>
+              <p class="field-tip" style="margin-bottom:.4rem">☀️ ${t("settings_light_preview")}</p>
+              <div id="colorPreviewLight" class="color-preview-box"></div>
+            </div>
+            <div>
+              <p class="field-tip" style="margin-bottom:.4rem">🌙 ${t("settings_dark_preview")}</p>
+              <div id="colorPreviewDark" class="color-preview-box"></div>
+            </div>
           </div>
 
           <div class="form-actions">
@@ -242,6 +335,8 @@ async function renderSettings() {
 
       </div>`;
 
+    updateColorPreview();
+
     if (isAdmin) {
       document
         .getElementById("saveClubBtn")
@@ -259,6 +354,9 @@ async function saveClub() {
   const name = document.getElementById("clubName").value.trim();
   const logoUrl = document.getElementById("clubLogo").value.trim();
   const primaryColor = document.getElementById("clubColorText").value.trim();
+  const secondaryColor = document
+    .getElementById("clubSecondaryText")
+    .value.trim();
 
   if (!name) {
     showAlert(t("err_fill"));
@@ -270,13 +368,16 @@ async function saveClub() {
       name,
       logoUrl,
       primaryColor,
+      secondaryColor,
     });
 
     localStorage.setItem("clubColor", data.primaryColor || "#00c853");
+    localStorage.setItem("clubSecondary", data.secondaryColor || "#3b82f6");
     localStorage.setItem("clubLogo", data.logoUrl || "");
     localStorage.setItem("clubName", data.name);
 
     applyPrimaryColor(data.primaryColor);
+    applySecondaryColor(data.secondaryColor);
     updateNavBrand(data.logoUrl, data.name);
     showAlert(t("settings_saved"), "success");
   } catch (e) {

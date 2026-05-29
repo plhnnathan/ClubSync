@@ -30,14 +30,17 @@ async function navigate(view) {
     return;
   }
 
+  // Load and apply club branding if not cached
   if (!localStorage.getItem("clubColor")) {
     try {
       const { data } = await request("GET", "/club");
       if (data.primaryColor) {
         localStorage.setItem("clubColor", data.primaryColor);
+        localStorage.setItem("clubSecondary", data.secondaryColor || "#3b82f6");
         localStorage.setItem("clubLogo", data.logoUrl || "");
         localStorage.setItem("clubName", data.name || "ClubSync");
         applyPrimaryColor(data.primaryColor);
+        applySecondaryColor(data.secondaryColor);
         updateNavBrand(data.logoUrl, data.name);
       }
     } catch (_) {}
@@ -72,12 +75,14 @@ async function navigate(view) {
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme();
 
-  // Apply saved club color and brand
+  // Apply saved club branding
   const savedColor = localStorage.getItem("clubColor");
+  const savedSecondary = localStorage.getItem("clubSecondary");
   const savedLogo = localStorage.getItem("clubLogo");
   const savedName = localStorage.getItem("clubName");
 
   if (savedColor) applyPrimaryColor(savedColor);
+  if (savedSecondary) applySecondaryColor(savedSecondary);
   if (savedName && authToken) updateNavBrand(savedLogo || "", savedName);
 
   const langBtn = document.getElementById("langBtn");

@@ -468,3 +468,41 @@ body.light .alert-success {
     grid-template-columns: 1fr;
   }
 }
+
+.color-input-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.color-input-row input[type="color"] {
+  width: 48px;
+  height: 38px;
+  padding: 0.1rem;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.field-tip {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+  font-weight: 500;
+}
+
+.color-preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.color-preview-box {
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  border: 1px solid var(--border);
+  min-height: 110px;
+  transition: all var(--transition);
+}

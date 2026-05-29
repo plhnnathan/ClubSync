@@ -5,6 +5,7 @@ export interface IClub extends Document {
   slug: string;
   logoUrl?: string;
   primaryColor?: string;
+  secondaryColor?: string;
   createdAt: Date;
 }
 
@@ -31,6 +32,11 @@ const ClubSchema = new Schema<IClub>(
       type: String,
       trim: true,
       default: "#00c853",
+    },
+    secondaryColor: {
+      type: String,
+      trim: true,
+      default: "#3b82f6",
     },
   },
   { timestamps: true },
