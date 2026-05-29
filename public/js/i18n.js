@@ -106,24 +106,6 @@ const translations = {
     settings_preview: "Preview",
     settings_dark_preview: "Dark mode preview",
     settings_light_preview: "Light mode preview",
-    pos_goalkeeper: "Goalkeeper",
-    pos_right_back: "Right Back",
-    pos_left_back: "Left Back",
-    pos_center_back: "Center Back",
-    pos_def_mid: "Defensive Midfielder",
-    pos_mid: "Midfielder",
-    pos_att_mid: "Attacking Midfielder",
-    pos_right_wing: "Right Winger",
-    pos_left_wing: "Left Winger",
-    pos_striker: "Striker",
-
-    foot_right: "Right",
-    foot_left: "Left",
-    foot_both: "Both",
-
-    status_active: "Active",
-    status_injured: "Injured",
-    status_loan: "On Loan",
   },
 
   pt: {
@@ -232,25 +214,6 @@ const translations = {
     settings_preview: "Previa",
     settings_dark_preview: "Previa modo escuro",
     settings_light_preview: "Previa modo claro",
-
-    pos_goalkeeper: "Goleiro",
-    pos_right_back: "Lateral Direito",
-    pos_left_back: "Lateral Esquerdo",
-    pos_center_back: "Zagueiro",
-    pos_def_mid: "Volante",
-    pos_mid: "Meio-Campo",
-    pos_att_mid: "Meia Atacante",
-    pos_right_wing: "Ponta Direita",
-    pos_left_wing: "Ponta Esquerda",
-    pos_striker: "Atacante",
-
-    foot_right: "Direito",
-    foot_left: "Esquerdo",
-    foot_both: "Ambos",
-
-    status_active: "Ativo",
-    status_injured: "Lesionado",
-    status_loan: "Emprestado",
   },
 };
 

@@ -1,22 +1,3 @@
-const posMap = {
-  Goalkeeper: "pos_goalkeeper",
-  "Right Back": "pos_right_back",
-  "Left Back": "pos_left_back",
-  "Center Back": "pos_center_back",
-  "Defensive Midfielder": "pos_def_mid",
-  Midfielder: "pos_mid",
-  "Attacking Midfielder": "pos_att_mid",
-  "Right Winger": "pos_right_wing",
-  "Left Winger": "pos_left_wing",
-  Striker: "pos_striker",
-};
-const footMap = { Right: "foot_right", Left: "foot_left", Both: "foot_both" };
-const statusMap = {
-  Active: "status_active",
-  Injured: "status_injured",
-  "On Loan": "status_loan",
-};
-
 async function renderPlayers() {
   document.getElementById("app").innerHTML =
     `<div class="loading">${t("loading")}</div>`;
@@ -69,20 +50,20 @@ function buildPlayersTable(players, compact = false) {
           <tr>
             <td><span class="badge badge-blue">${p.jerseyNumber}</span></td>
             <td><strong>${p.name}</strong></td>
-            <td><span data-i18n="${posMap[p.position]}">${t(posMap[p.position]) || p.position}</span></td>
-            ${!compact ? `<td><span data-i18n="${footMap[p.dominantFoot]}">${t(footMap[p.dominantFoot]) || p.dominantFoot}</span></td>` : ""}
+            <td>${p.position}</td>
+            ${!compact ? `<td>${p.dominantFoot}</td>` : ""}
             <td>${statusBadge(p.status)}</td>
             ${
               !compact
                 ? `
             <td>
               <div class="td-actions">
-                <button class="btn btn-info btn-sm js-stats" data-id="${p._id}" data-i18n="btn_stats">${t("btn_stats")}</button>
+                <button class="btn btn-info btn-sm js-stats" data-id="${p._id}">${t("btn_stats")}</button>
                 ${
                   isAdmin
                     ? `
-                <button class="btn btn-primary btn-sm js-edit" data-id="${p._id}" data-i18n="btn_edit">${t("btn_edit")}</button>
-                <button class="btn btn-danger btn-sm js-delete" data-id="${p._id}" data-i18n="btn_delete">${t("btn_delete")}</button>
+                <button class="btn btn-primary btn-sm js-edit" data-id="${p._id}">${t("btn_edit")}</button>
+                <button class="btn btn-danger btn-sm js-delete" data-id="${p._id}">${t("btn_delete")}</button>
                 `
                     : ""
                 }
@@ -98,12 +79,12 @@ function buildPlayersTable(players, compact = false) {
 }
 
 function statusBadge(status) {
-  const mapClass = {
+  const map = {
     Active: "badge-green",
     Injured: "badge-red",
     "On Loan": "badge-yellow",
   };
-  return `<span class="badge ${mapClass[status] || "badge-gray"}" data-i18n="${statusMap[status]}">${t(statusMap[status]) || status}</span>`;
+  return `<span class="badge ${map[status] || "badge-gray"}">${status}</span>`;
 }
 
 document.addEventListener("click", async (e) => {
@@ -116,9 +97,9 @@ document.addEventListener("click", async (e) => {
 });
 
 async function openPlayerModal(id = null) {
-  const titleEl = document.getElementById("playerModalTitle");
-  titleEl.dataset.i18n = id ? "modal_edit_player" : "modal_add_player";
-  titleEl.textContent = t(titleEl.dataset.i18n);
+  document.getElementById("playerModalTitle").textContent = id
+    ? t("modal_edit_player")
+    : t("modal_add_player");
 
   let player = {};
   if (id) {
@@ -128,55 +109,55 @@ async function openPlayerModal(id = null) {
     } catch (e) {}
   }
 
+  const positions = [
+    "Goalkeeper",
+    "Right Back",
+    "Left Back",
+    "Center Back",
+    "Defensive Midfielder",
+    "Midfielder",
+    "Attacking Midfielder",
+    "Right Winger",
+    "Left Winger",
+    "Striker",
+  ];
+  const feet = ["Right", "Left", "Both"];
+  const statuses = ["Active", "Injured", "On Loan"];
+
   document.getElementById("playerModalBody").innerHTML = `
     <div class="form-row">
       <div class="form-group">
-        <label data-i18n="form_name">${t("form_name")}</label>
+        <label>${t("form_name")}</label>
         <input type="text" id="pName" value="${player.name || ""}" placeholder="Gabriel Silva" />
       </div>
       <div class="form-group">
-        <label data-i18n="form_jersey">${t("form_jersey")}</label>
+        <label>${t("form_jersey")}</label>
         <input type="number" id="pJersey" value="${player.jerseyNumber || ""}" min="1" max="99" />
       </div>
     </div>
     <div class="form-group">
-      <label data-i18n="form_position">${t("form_position")}</label>
+      <label>${t("form_position")}</label>
       <select id="pPosition">
-        ${Object.keys(posMap)
-          .map(
-            (p) =>
-              `<option value="${p}" data-i18n="${posMap[p]}" ${player.position === p ? "selected" : ""}>${t(posMap[p])}</option>`,
-          )
-          .join("")}
+        ${positions.map((p) => `<option ${player.position === p ? "selected" : ""}>${p}</option>`).join("")}
       </select>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label data-i18n="form_foot">${t("form_foot")}</label>
+        <label>${t("form_foot")}</label>
         <select id="pFoot">
-          ${Object.keys(footMap)
-            .map(
-              (f) =>
-                `<option value="${f}" data-i18n="${footMap[f]}" ${player.dominantFoot === f ? "selected" : ""}>${t(footMap[f])}</option>`,
-            )
-            .join("")}
+          ${feet.map((f) => `<option ${player.dominantFoot === f ? "selected" : ""}>${f}</option>`).join("")}
         </select>
       </div>
       <div class="form-group">
-        <label data-i18n="form_status">${t("form_status")}</label>
+        <label>${t("form_status")}</label>
         <select id="pStatus">
-          ${Object.keys(statusMap)
-            .map(
-              (s) =>
-                `<option value="${s}" data-i18n="${statusMap[s]}" ${player.status === s ? "selected" : ""}>${t(statusMap[s])}</option>`,
-            )
-            .join("")}
+          ${statuses.map((s) => `<option ${player.status === s ? "selected" : ""}>${s}</option>`).join("")}
         </select>
       </div>
     </div>
     <div class="form-actions">
-      <button class="btn btn-primary" id="savePlayerBtn" data-i18n="form_save">${t("form_save")}</button>
-      <button class="btn btn-ghost" onclick="closeModal('playerModal')" data-i18n="form_cancel">${t("form_cancel")}</button>
+      <button class="btn btn-primary" id="savePlayerBtn">${t("form_save")}</button>
+      <button class="btn btn-ghost" onclick="closeModal('playerModal')">${t("form_cancel")}</button>
     </div>`;
 
   document
@@ -188,7 +169,10 @@ async function openPlayerModal(id = null) {
 async function savePlayer(id) {
   const name = document.getElementById("pName").value.trim();
   const jerseyNumber = parseInt(document.getElementById("pJersey").value);
-  if (!name || !jerseyNumber) return showAlert(t("err_fill"));
+  if (!name || !jerseyNumber) {
+    showAlert(t("err_fill"));
+    return;
+  }
 
   const body = {
     name,
@@ -222,45 +206,46 @@ async function viewPlayerStats(id) {
   try {
     const res = await request("GET", `/players/${id}/stats`);
     const { player, stats } = res.data;
+
     const avg = stats.averageRating || 0;
     const pct = (avg / 10) * 100;
 
-    const titleEl = document.getElementById("playerModalTitle");
-    titleEl.dataset.i18n = "stats_title";
-    titleEl.textContent = t("stats_title");
-
+    document.getElementById("playerModalTitle").textContent = t("stats_title");
     document.getElementById("playerModalBody").innerHTML = `
       <div style="text-align:center;margin-bottom:1.5rem">
         <div style="font-size:1.3rem;font-weight:700">${player.name}</div>
-        <div style="color:var(--text-muted);font-size:.9rem" data-i18n="${posMap[player.position]}">${t(posMap[player.position]) || player.position} · #${player.jerseyNumber} · ${statusBadge(player.status)}</div>
+        <div style="color:var(--text-muted);font-size:.9rem">${player.position} · #${player.jerseyNumber} · ${statusBadge(player.status)}</div>
       </div>
+
       <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
         <div class="stat-card">
           <div class="stat-number">${stats.matchesPlayed}</div>
-          <div class="stat-label" data-i18n="stats_matches">${t("stats_matches")}</div>
+          <div class="stat-label">${t("stats_matches")}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" style="color:#34d399">${stats.totalGoals}</div>
-          <div class="stat-label" data-i18n="stats_goals">${t("stats_goals")}</div>
+          <div class="stat-label">${t("stats_goals")}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" style="color:#93c5fd">${stats.totalAssists}</div>
-          <div class="stat-label" data-i18n="stats_assists">${t("stats_assists")}</div>
+          <div class="stat-label">${t("stats_assists")}</div>
         </div>
         <div class="stat-card">
           <div class="stat-number" style="color:var(--text-muted)">${stats.totalMinutesPlayed}</div>
-          <div class="stat-label" data-i18n="stats_minutes">${t("stats_minutes")}</div>
+          <div class="stat-label">${t("stats_minutes")}</div>
         </div>
       </div>
+
       <div class="card" style="margin:0">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-          <span style="font-size:.85rem;color:var(--text-muted)" data-i18n="stats_avg">${t("stats_avg")}</span>
+          <span style="font-size:.85rem;color:var(--text-muted)">${t("stats_avg")}</span>
           <strong style="color:var(--yellow);font-size:1.1rem">${avg}</strong>
         </div>
         <div class="rating-track">
           <div class="rating-fill" style="width:${pct}%;background:${avg >= 7 ? "var(--green)" : avg >= 5 ? "var(--yellow)" : "var(--red)"}"></div>
         </div>
       </div>`;
+
     openModal("playerModal");
   } catch (e) {
     showAlert(e.message);
