@@ -1,11 +1,13 @@
 const translations = {
   en: {
+    lang_name: "English",
     nav_dashboard: "Dashboard",
     nav_players: "Players",
     nav_reports: "Match Reports",
     nav_settings: "Settings",
     nav_logout: "Logout",
 
+    auth_language: "Language",
     login_subtitle: "Sign in to your club",
     login_email: "Email",
     login_password: "Password",
@@ -92,11 +94,20 @@ const translations = {
     settings_club_name: "Club Name",
     settings_logo_url: "Logo URL",
     settings_logo_tip: "Paste a direct image link (PNG, JPG or SVG)",
+    settings_upload: "Upload image",
+    settings_logo_dnd: "Drop the logo here, or use the buttons below",
     settings_color: "Primary Color",
     settings_color_tip:
       "This color will be applied across the entire interface.",
     settings_secondary: "Secondary Color",
     settings_secondary_tip: "Used for backgrounds, badges and accents.",
+    settings_extract: "Auto-extract from logo",
+    settings_extracting: "Reading colors from logo…",
+    settings_extract_done: "Colors extracted from the logo!",
+    settings_extract_fail:
+      "Couldn't read this image (CORS). Try uploading the file instead.",
+    settings_extract_hint:
+      "Colors below were auto-detected from your logo. Click a swatch or fine-tune them.",
     settings_members: "Members",
     settings_email: "Email",
     settings_add_analyst: "Add Analyst",
@@ -109,17 +120,19 @@ const translations = {
   },
 
   pt: {
+    lang_name: "Português",
     nav_dashboard: "Painel",
     nav_players: "Jogadores",
-    nav_reports: "Avaliacoes",
-    nav_settings: "Configuracoes",
+    nav_reports: "Avaliações",
+    nav_settings: "Configurações",
     nav_logout: "Sair",
 
+    auth_language: "Idioma",
     login_subtitle: "Acesse o seu clube",
     login_email: "E-mail",
     login_password: "Senha",
     login_btn: "Entrar",
-    login_toggle: "Nao tem uma conta?",
+    login_toggle: "Não tem uma conta?",
     login_toggle_link: "Cadastre-se",
 
     register_subtitle: "Configure seu clube no ClubSync",
@@ -128,54 +141,54 @@ const translations = {
     register_password: "Senha",
     register_club: "Nome do Clube",
     register_btn: "Criar Conta",
-    register_toggle: "Ja tem uma conta?",
+    register_toggle: "Já tem uma conta?",
     register_toggle_link: "Entrar",
 
     dashboard_welcome: "Bem-vindo",
     dashboard_total_players: "Total de Jogadores",
     dashboard_active: "Ativos",
-    dashboard_injured: "Departamento Medico",
-    dashboard_reports: "Avaliacoes",
+    dashboard_injured: "Departamento Médico",
+    dashboard_reports: "Avaliações",
 
     players_title: "Elenco",
     players_add: "Adicionar Jogador",
     players_name: "Nome",
-    players_position: "Posicao",
+    players_position: "Posição",
     players_jersey: "Camisa",
-    players_foot: "Pe",
+    players_foot: "Pé",
     players_status: "Status",
-    players_actions: "Acoes",
+    players_actions: "Ações",
 
     btn_stats: "Stats",
     btn_edit: "Editar",
     btn_delete: "Excluir",
 
-    reports_title: "Avaliacoes de Partida",
-    reports_add: "Adicionar Avaliacao",
+    reports_title: "Avaliações de Partida",
+    reports_add: "Adicionar Avaliação",
     reports_player: "Jogador",
-    reports_opponent: "Adversario",
+    reports_opponent: "Adversário",
     reports_date: "Data",
     reports_min: "Min",
     reports_goals: "Gols",
-    reports_assists: "Assistencias",
+    reports_assists: "Assistências",
     reports_rating: "Nota",
-    reports_actions: "Acoes",
+    reports_actions: "Ações",
 
     modal_add_player: "Adicionar Jogador",
     modal_edit_player: "Editar Jogador",
-    modal_add_report: "Adicionar Avaliacao",
+    modal_add_report: "Adicionar Avaliação",
 
     form_name: "Nome",
-    form_position: "Posicao",
-    form_jersey: "Numero da Camisa",
-    form_foot: "Pe Dominante",
+    form_position: "Posição",
+    form_jersey: "Número da Camisa",
+    form_foot: "Pé Dominante",
     form_status: "Status",
     form_player: "Jogador",
-    form_opponent: "Adversario",
+    form_opponent: "Adversário",
     form_date: "Data da Partida",
     form_minutes: "Minutos Jogados",
     form_goals: "Gols",
-    form_assists: "Assistencias",
+    form_assists: "Assistências",
     form_rating: "Nota Sofascore (0-10)",
     form_save: "Salvar",
     form_cancel: "Cancelar",
@@ -184,60 +197,229 @@ const translations = {
     no_data: "Nenhum registro encontrado.",
     loading: "Carregando",
 
-    stats_title: "Estatisticas",
+    stats_title: "Estatísticas",
     stats_matches: "Partidas",
     stats_goals: "Gols",
-    stats_assists: "Assistencias",
+    stats_assists: "Assistências",
     stats_minutes: "Minutos",
-    stats_avg: "Nota Media",
+    stats_avg: "Nota Média",
 
     role_admin: "Admin",
     role_analyst: "Analista",
-    err_fill: "Preencha todos os campos obrigatorios.",
+    err_fill: "Preencha todos os campos obrigatórios.",
 
-    settings_title: "Configuracoes do Clube",
+    settings_title: "Configurações do Clube",
     settings_subtitle: "Gerencie o perfil e os membros do seu clube",
     settings_club: "Perfil do Clube",
     settings_club_name: "Nome do Clube",
     settings_logo_url: "URL da Logo",
     settings_logo_tip: "Cole um link direto de imagem (PNG, JPG ou SVG)",
+    settings_upload: "Enviar imagem",
+    settings_logo_dnd: "Arraste a logo aqui, ou use os botões abaixo",
     settings_color: "Cor Principal",
-    settings_color_tip: "Esta cor sera aplicada em toda a interface.",
-    settings_secondary: "Cor Secundaria",
+    settings_color_tip: "Esta cor será aplicada em toda a interface.",
+    settings_secondary: "Cor Secundária",
     settings_secondary_tip: "Usada em fundos, badges e detalhes.",
+    settings_extract: "Extrair da logo automaticamente",
+    settings_extracting: "Lendo as cores da logo…",
+    settings_extract_done: "Cores extraídas da logo!",
+    settings_extract_fail:
+      "Não foi possível ler esta imagem (CORS). Tente enviar o arquivo.",
+    settings_extract_hint:
+      "As cores abaixo foram detectadas da sua logo. Clique em uma amostra ou ajuste-as.",
     settings_members: "Membros",
     settings_email: "E-mail",
     settings_add_analyst: "Adicionar Analista",
     settings_saved: "Clube atualizado com sucesso!",
     settings_analyst_added: "Analista adicionado com sucesso!",
-    settings_readonly: "Apenas administradores podem editar as configuracoes.",
-    settings_preview: "Previa",
-    settings_dark_preview: "Previa modo escuro",
-    settings_light_preview: "Previa modo claro",
+    settings_readonly: "Apenas administradores podem editar as configurações.",
+    settings_preview: "Prévia",
+    settings_dark_preview: "Prévia modo escuro",
+    settings_light_preview: "Prévia modo claro",
+  },
+
+  es: {
+    lang_name: "Español",
+    nav_dashboard: "Panel",
+    nav_players: "Jugadores",
+    nav_reports: "Informes",
+    nav_settings: "Ajustes",
+    nav_logout: "Salir",
+
+    auth_language: "Idioma",
+    login_subtitle: "Accede a tu club",
+    login_email: "Correo",
+    login_password: "Contraseña",
+    login_btn: "Entrar",
+    login_toggle: "¿No tienes una cuenta?",
+    login_toggle_link: "Regístrate",
+
+    register_subtitle: "Configura tu club en ClubSync",
+    register_name: "Nombre Completo",
+    register_email: "Correo",
+    register_password: "Contraseña",
+    register_club: "Nombre del Club",
+    register_btn: "Crear Cuenta",
+    register_toggle: "¿Ya tienes una cuenta?",
+    register_toggle_link: "Entrar",
+
+    dashboard_welcome: "Bienvenido",
+    dashboard_total_players: "Total de Jugadores",
+    dashboard_active: "Activos",
+    dashboard_injured: "Dpto. Médico",
+    dashboard_reports: "Informes",
+
+    players_title: "Plantilla",
+    players_add: "Añadir Jugador",
+    players_name: "Nombre",
+    players_position: "Posición",
+    players_jersey: "Dorsal",
+    players_foot: "Pie",
+    players_status: "Estado",
+    players_actions: "Acciones",
+
+    btn_stats: "Stats",
+    btn_edit: "Editar",
+    btn_delete: "Eliminar",
+
+    reports_title: "Informes de Partido",
+    reports_add: "Añadir Informe",
+    reports_player: "Jugador",
+    reports_opponent: "Rival",
+    reports_date: "Fecha",
+    reports_min: "Min",
+    reports_goals: "Goles",
+    reports_assists: "Asistencias",
+    reports_rating: "Nota",
+    reports_actions: "Acciones",
+
+    modal_add_player: "Añadir Jugador",
+    modal_edit_player: "Editar Jugador",
+    modal_add_report: "Añadir Informe",
+
+    form_name: "Nombre",
+    form_position: "Posición",
+    form_jersey: "Número de Dorsal",
+    form_foot: "Pie Dominante",
+    form_status: "Estado",
+    form_player: "Jugador",
+    form_opponent: "Rival",
+    form_date: "Fecha del Partido",
+    form_minutes: "Minutos Jugados",
+    form_goals: "Goles",
+    form_assists: "Asistencias",
+    form_rating: "Nota Sofascore (0-10)",
+    form_save: "Guardar",
+    form_cancel: "Cancelar",
+
+    confirm_delete: "¿Seguro que quieres eliminar esto?",
+    no_data: "No se encontraron registros.",
+    loading: "Cargando",
+
+    stats_title: "Estadísticas",
+    stats_matches: "Partidos",
+    stats_goals: "Goles",
+    stats_assists: "Asistencias",
+    stats_minutes: "Minutos",
+    stats_avg: "Nota Media",
+
+    role_admin: "Admin",
+    role_analyst: "Analista",
+    err_fill: "Por favor completa todos los campos obligatorios.",
+
+    settings_title: "Ajustes del Club",
+    settings_subtitle: "Gestiona el perfil y los miembros de tu club",
+    settings_club: "Perfil del Club",
+    settings_club_name: "Nombre del Club",
+    settings_logo_url: "URL del Logo",
+    settings_logo_tip: "Pega un enlace directo de imagen (PNG, JPG o SVG)",
+    settings_upload: "Subir imagen",
+    settings_logo_dnd: "Arrastra el logo aquí, o usa los botones de abajo",
+    settings_color: "Color Principal",
+    settings_color_tip: "Este color se aplicará en toda la interfaz.",
+    settings_secondary: "Color Secundario",
+    settings_secondary_tip: "Usado en fondos, etiquetas y detalles.",
+    settings_extract: "Extraer del logo automáticamente",
+    settings_extracting: "Leyendo los colores del logo…",
+    settings_extract_done: "¡Colores extraídos del logo!",
+    settings_extract_fail:
+      "No se pudo leer esta imagen (CORS). Intenta subir el archivo.",
+    settings_extract_hint:
+      "Los colores de abajo se detectaron de tu logo. Haz clic en una muestra o ajústalos.",
+    settings_members: "Miembros",
+    settings_email: "Correo",
+    settings_add_analyst: "Añadir Analista",
+    settings_saved: "¡Club actualizado con éxito!",
+    settings_analyst_added: "¡Analista añadido con éxito!",
+    settings_readonly: "Solo los administradores pueden editar los ajustes.",
+    settings_preview: "Vista previa",
+    settings_dark_preview: "Vista previa modo oscuro",
+    settings_light_preview: "Vista previa modo claro",
   },
 };
 
+const LANGS = [
+  { code: "en", flag: "🇬🇧", label: "EN" },
+  { code: "pt", flag: "🇧🇷", label: "PT" },
+  { code: "es", flag: "🇪🇸", label: "ES" },
+];
+
 let currentLang = localStorage.getItem("lang") || "en";
+if (!translations[currentLang]) currentLang = "en";
 
 function t(key) {
-  return translations[currentLang][key] || key;
+  return (translations[currentLang] && translations[currentLang][key]) || key;
 }
 
 function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = t(el.dataset.i18n);
   });
+  document.documentElement.lang = currentLang;
 }
 
-function toggleLang() {
-  currentLang = currentLang === "pt" ? "pt" : "en";
-  localStorage.setItem("lang", currentLang);
-
-  const btn = document.getElementById("langBtn");
-  if (btn) btn.textContent = currentLang === "en" ? "🌐 PT-BR" : "🌐 EN";
-
+function setLang(lang) {
+  if (!translations[lang]) return;
+  currentLang = lang;
+  localStorage.setItem("lang", lang);
   applyI18n();
 
   const active = document.querySelector(".nav-btn.active");
-  if (active) navigate(active.dataset.nav);
+  if (authToken && active) {
+    navigate(active.dataset.nav);
+  } else if (!authToken) {
+    const onRegister = !!document.getElementById("regClub");
+    onRegister ? renderRegister() : renderLogin();
+  }
+}
+
+function langSwitcherHTML() {
+  return `<div class="segmented" id="langSwitcher">
+    ${LANGS.map(
+      (l) => `<button type="button" data-lang="${l.code}"
+        class="${l.code === currentLang ? "active" : ""}">
+        <span>${l.flag}</span><span>${l.label}</span>
+      </button>`,
+    ).join("")}
+  </div>`;
+}
+
+function bindLangSwitcher() {
+  document.querySelectorAll("#langSwitcher button").forEach((btn) => {
+    btn.addEventListener("click", () => setLang(btn.dataset.lang));
+  });
+}
+
+function cycleLang() {
+  const idx = LANGS.findIndex((l) => l.code === currentLang);
+  const next = LANGS[(idx + 1) % LANGS.length];
+  setLang(next.code);
+  updateLangBtn();
+}
+
+function updateLangBtn() {
+  const btn = document.getElementById("langBtn");
+  if (!btn) return;
+  const l = LANGS.find((x) => x.code === currentLang) || LANGS[0];
+  btn.textContent = `${l.flag} ${l.label}`;
 }

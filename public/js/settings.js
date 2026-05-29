@@ -1,136 +1,136 @@
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return { r, g, b };
+let _logoSrc = "";
+
+function fileToDataUrl(file, maxSize = 256) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("read-failed"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("decode-failed"));
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-function getLuminance(hex) {
-  const { r, g, b } = hexToRgb(hex);
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-}
-
-function shadeColor(hex, percent) {
-  const { r, g, b } = hexToRgb(hex);
-  const clamp = (v) => Math.min(255, Math.max(0, v));
-  const adjust = (c) =>
-    clamp(
-      c + (percent < 0 ? (c * percent) / 100 : ((255 - c) * percent) / 100),
-    );
-  const nr = adjust(r),
-    ng = adjust(g),
-    nb = adjust(b);
-  return `#${Math.round(nr).toString(16).padStart(2, "0")}${Math.round(ng).toString(16).padStart(2, "0")}${Math.round(nb).toString(16).padStart(2, "0")}`;
-}
-
-function applyPrimaryColor(hex) {
-  if (!hex || !/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
-
-  const luminance = getLuminance(hex);
-  const textOnColor = luminance > 0.4 ? "#000000" : "#ffffff";
-  const darkVariant = shadeColor(hex, -20);
-  const dimVariant = shadeColor(hex, -70);
-
-  document.documentElement.style.setProperty("--green", hex);
-  document.documentElement.style.setProperty("--green-dark", darkVariant);
-  document.documentElement.style.setProperty("--green-dim", dimVariant);
-
-  let style = document.getElementById("dynamic-color-style");
-  if (!style) {
-    style = document.createElement("style");
-    style.id = "dynamic-color-style";
-    document.head.appendChild(style);
-  }
-
-  style.textContent = `
-    .btn-primary                  { color: ${textOnColor} !important; }
-    .nav-brand                    { color: var(--green) !important; }
-    .card-title                   { color: var(--green) !important; }
-    .stat-number                  { color: var(--green) !important; }
-    .nav-btn.active               { color: var(--green) !important; }
-    .auth-divider a               { color: var(--green) !important; }
-    .badge-green                  { background: var(--green-dim) !important; }
-    input:focus, select:focus     { border-color: var(--green) !important; }
-    .stat-card:hover              { border-color: var(--green) !important; }
-    .club-logo-preview:hover      { border-color: var(--green) !important; }
-    .nav-btn:hover                { color: var(--green) !important; }
-  `;
-}
-
-function applySecondaryColor(hex) {
-  if (!hex || !/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
-  document.documentElement.style.setProperty("--blue", hex);
-  document.documentElement.style.setProperty(
-    "--blue-dim",
-    shadeColor(hex, -70),
-  );
-
-  const luminance = getLuminance(hex);
-  const textOnColor = luminance > 0.4 ? "#000000" : "#ffffff";
-
-  let style = document.getElementById("dynamic-secondary-style");
-  if (!style) {
-    style = document.createElement("style");
-    style.id = "dynamic-secondary-style";
-    document.head.appendChild(style);
-  }
-
-  style.textContent = `
-    .btn-info              { color: ${textOnColor} !important; }
-    .badge-blue            { background: var(--blue-dim) !important; }
-  `;
-}
-
-function updateNavBrand(logoUrl, clubName) {
-  const brand = document.querySelector(".nav-brand");
-  if (!brand) return;
-  brand.innerHTML = logoUrl
-    ? `<img src="${logoUrl}" alt="${clubName}" class="nav-club-logo" /> <span>${clubName}</span>`
-    : `<span class="nav-logo">⚽</span> <span>${clubName || "ClubSync"}</span>`;
-}
-
-function previewLogo(url) {
+function renderLogoPreview() {
   const preview = document.querySelector(".club-logo-preview");
   if (!preview) return;
   const name = document.getElementById("clubName")?.value || "";
-  preview.innerHTML = url
-    ? `<img src="${url}" alt="${name}" class="club-logo-img"
-        onerror="this.style.display='none'" />
-       <div class="club-logo-name">${name}</div>`
+  preview.innerHTML = _logoSrc
+    ? `<img src="${_logoSrc}" alt="${name}" class="club-logo-img" onerror="this.replaceWith(document.createElement('div'))" />
+       <div class="club-logo-name">${name}</div>
+       <div class="logo-hint">${t("settings_logo_dnd")}</div>`
     : `<div class="club-logo-placeholder">⚽</div>
-       <div class="club-logo-name">${name}</div>`;
+       <div class="club-logo-name">${name}</div>
+       <div class="logo-hint">${t("settings_logo_dnd")}</div>`;
+}
+
+async function setLogo(src, { extract = true } = {}) {
+  _logoSrc = src;
+  renderLogoPreview();
+  if (extract && src) await extractAndApply(src);
+}
+
+async function extractAndApply(src) {
+  const banner = document.getElementById("extractBanner");
+  if (banner) {
+    banner.style.display = "flex";
+    banner.textContent = "🎨 " + t("settings_extracting");
+  }
+  try {
+    const { primary, secondary, palette } = await extractPaletteFromImage(src);
+    setColorInputs(primary, secondary);
+    applyPrimaryColor(primary);
+    applySecondaryColor(secondary);
+    renderSwatches(palette);
+    updateColorPreview();
+    if (banner) {
+      banner.className = "extract-banner";
+      banner.textContent = "🎨 " + t("settings_extract_hint");
+    }
+    showAlert(t("settings_extract_done"), "success");
+  } catch (e) {
+    if (banner) {
+      banner.style.display = "flex";
+      banner.style.background = "var(--warning-soft)";
+      banner.style.color = "#b45309";
+      banner.textContent = "⚠️ " + t("settings_extract_fail");
+    }
+    showAlert(t("settings_extract_fail"));
+  }
+}
+
+function setColorInputs(primary, secondary) {
+  const set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.value = v;
+  };
+  if (isHex(primary)) {
+    set("clubColor", primary);
+    set("clubColorText", primary);
+  }
+  if (isHex(secondary)) {
+    set("clubSecondary", secondary);
+    set("clubSecondaryText", secondary);
+  }
+}
+
+function renderSwatches(palette) {
+  const wrap = document.getElementById("colorSwatches");
+  if (!wrap) return;
+  wrap.innerHTML = palette
+    .map(
+      (hex) =>
+        `<div class="color-swatch" style="background:${hex}" title="${hex}"
+          data-hex="${hex}"></div>`,
+    )
+    .join("");
+  wrap.querySelectorAll(".color-swatch").forEach((sw) => {
+    sw.addEventListener("click", () => {
+      const hex = sw.dataset.hex;
+      setColorInputs(hex, document.getElementById("clubSecondaryText").value);
+      applyPrimaryColor(hex);
+      updateColorPreview();
+    });
+  });
 }
 
 function previewColor(value) {
-  const textInput = document.getElementById("clubColorText");
-  if (textInput) textInput.value = value;
+  const text = document.getElementById("clubColorText");
+  if (text) text.value = value;
   applyPrimaryColor(value);
   updateColorPreview();
 }
-
 function syncColorPicker(value) {
-  if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-    const picker = document.getElementById("clubColor");
-    if (picker) picker.value = value;
-    applyPrimaryColor(value);
-    updateColorPreview();
-  }
+  if (!isHex(value)) return;
+  const picker = document.getElementById("clubColor");
+  if (picker) picker.value = value;
+  applyPrimaryColor(value);
+  updateColorPreview();
 }
-
 function previewSecondary(value) {
-  const textInput = document.getElementById("clubSecondaryText");
-  if (textInput) textInput.value = value;
+  const text = document.getElementById("clubSecondaryText");
+  if (text) text.value = value;
   applySecondaryColor(value);
   updateColorPreview();
 }
-
 function syncSecondaryPicker(value) {
-  if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-    const picker = document.getElementById("clubSecondary");
-    if (picker) picker.value = value;
-    applySecondaryColor(value);
-    updateColorPreview();
-  }
+  if (!isHex(value)) return;
+  const picker = document.getElementById("clubSecondary");
+  if (picker) picker.value = value;
+  applySecondaryColor(value);
+  updateColorPreview();
 }
 
 function updateColorPreview() {
@@ -138,57 +138,47 @@ function updateColorPreview() {
   const secondary =
     document.getElementById("clubSecondaryText")?.value || "#3b82f6";
 
-  // Ensure minimum contrast for dark backgrounds
-  function ensureContrast(hex, bgLuminance) {
-    const lum = getLuminance(hex);
-    // If color is too dark for dark bg, lighten it for display only
-    if (bgLuminance < 0.3 && lum < 0.15) {
-      return shadeColor(hex, 60); // lighten 60% for preview
-    }
-    return hex;
-  }
-
-  const primaryOnDark = ensureContrast(primary, 0.1);
-  const secondaryOnDark = ensureContrast(secondary, 0.1);
-
-  const primaryText = getLuminance(primary) > 0.4 ? "#000" : "#fff";
-  const secondaryText = getLuminance(secondary) > 0.4 ? "#000" : "#fff";
-
-  const lightPreview = document.getElementById("colorPreviewLight");
-  const darkPreview = document.getElementById("colorPreviewDark");
-
-  if (lightPreview) {
-    lightPreview.style.background = "#f0f2f5";
-    lightPreview.innerHTML = `
+  const card = (bg, surface, border, neutralText, neutralBg, neutralBorder) => {
+    const pText = getLuminance(primary) > 0.55 ? "#000" : "#fff";
+    const sText = getLuminance(secondary) > 0.55 ? "#000" : "#fff";
+    return `
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
-        <div style="width:22px;height:22px;background:${primary};border-radius:4px;border:1px solid rgba(0,0,0,.1)"></div>
-        <span style="font-weight:700;color:${primary};font-size:.9rem">ClubSync</span>
+        <div style="width:22px;height:22px;background:${primary};border-radius:6px"></div>
+        <span style="font-weight:800;color:${primary};font-size:.9rem">ClubSync</span>
       </div>
       <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
-        <span style="background:${primary};color:${primaryText};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">PRIMARY</span>
-        <span style="background:${secondary};color:${secondaryText};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">SECONDARY</span>
-        <span style="background:#f3f4f6;border:1px solid #d1d5db;color:#111827;padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">NEUTRAL</span>
+        <span style="background:${primary};color:${pText};padding:.2rem .7rem;border-radius:99px;font-size:.7rem;font-weight:700">PRIMARY</span>
+        <span style="background:${secondary};color:${sText};padding:.2rem .7rem;border-radius:99px;font-size:.7rem;font-weight:700">SECONDARY</span>
+        <span style="background:${neutralBg};border:1px solid ${neutralBorder};color:${neutralText};padding:.2rem .7rem;border-radius:99px;font-size:.7rem;font-weight:700">NEUTRAL</span>
       </div>
-      <div style="height:6px;border-radius:99px;background:#e5e7eb;overflow:hidden">
+      <div style="height:6px;border-radius:99px;background:${border};overflow:hidden">
         <div style="width:70%;height:100%;background:${primary};border-radius:99px"></div>
       </div>`;
-  }
+  };
 
-  if (darkPreview) {
-    darkPreview.style.background = "#111827";
-    darkPreview.innerHTML = `
-      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem">
-        <div style="width:22px;height:22px;background:${primaryOnDark};border-radius:4px;border:1px solid rgba(255,255,255,.1)"></div>
-        <span style="font-weight:700;color:${primaryOnDark};font-size:.9rem">ClubSync</span>
-      </div>
-      <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
-        <span style="background:${primaryOnDark};color:${getLuminance(primaryOnDark) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">PRIMARY</span>
-        <span style="background:${secondaryOnDark};color:${getLuminance(secondaryOnDark) > 0.4 ? "#000" : "#fff"};padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">SECONDARY</span>
-        <span style="background:#1f2937;border:1px solid #374151;color:#f9fafb;padding:.2rem .7rem;border-radius:99px;font-size:.72rem;font-weight:700">NEUTRAL</span>
-      </div>
-      <div style="height:6px;border-radius:99px;background:#374151;overflow:hidden">
-        <div style="width:70%;height:100%;background:${primaryOnDark};border-radius:99px"></div>
-      </div>`;
+  const light = document.getElementById("colorPreviewLight");
+  const dark = document.getElementById("colorPreviewDark");
+  if (light) {
+    light.style.background = "#f0f2f5";
+    light.innerHTML = card(
+      "#f0f2f5",
+      "#fff",
+      "#e5e7eb",
+      "#111827",
+      "#f3f4f6",
+      "#d1d5db",
+    );
+  }
+  if (dark) {
+    dark.style.background = "#0f1626";
+    dark.innerHTML = card(
+      "#0f1626",
+      "#18202f",
+      "#232d40",
+      "#f1f5f9",
+      "#18202f",
+      "#232d40",
+    );
   }
 }
 
@@ -206,45 +196,44 @@ async function renderSettings() {
     const isAdmin = currentUser.role === "admin";
     const primaryColor = club.primaryColor || "#00c853";
     const secondaryColor = club.secondaryColor || "#3b82f6";
+    _logoSrc = club.logoUrl || "";
 
     document.getElementById("app").innerHTML = `
       <div class="page-header">
         <div>
-          <h2 class="page-title">⚙️ ${t("settings_title")}</h2>
+          <h2 class="page-title"><span class="emoji">⚙️</span> ${t("settings_title")}</h2>
           <p class="page-subtitle">${t("settings_subtitle")}</p>
         </div>
       </div>
 
       <div class="settings-grid">
-
         <!-- Club Profile -->
         <div class="card">
-          <div class="card-title">🏟️ ${t("settings_club")}</div>
+          <div class="card-title"><span class="dot"></span> ${t("settings_club")}</div>
 
-          <div class="club-logo-preview">
-            ${
-              club.logoUrl
-                ? `<img src="${club.logoUrl}" alt="${club.name}" class="club-logo-img" />`
-                : `<div class="club-logo-placeholder">⚽</div>`
-            }
-            <div class="club-logo-name">${club.name}</div>
-          </div>
+          <div class="club-logo-preview" id="logoDrop"></div>
 
           ${
             isAdmin
               ? `
-          <div class="form-group" style="margin-top:1.5rem">
+          <div class="upload-row">
+            <button class="btn btn-ghost btn-block" id="uploadBtn">⬆️ ${t("settings_upload")}</button>
+            <input type="file" id="logoFile" accept="image/*" class="hidden" />
+          </div>
+
+          <div class="form-group" style="margin-top:1rem">
             <label>${t("settings_club_name")}</label>
-            <input type="text" id="clubName" value="${club.name}" />
+            <input type="text" id="clubName" value="${club.name}" oninput="renderLogoPreview()" />
           </div>
 
           <div class="form-group">
             <label>${t("settings_logo_url")}</label>
             <input type="url" id="clubLogo" value="${club.logoUrl || ""}"
-              placeholder="https://example.com/logo.png"
-              oninput="previewLogo(this.value)" />
+              placeholder="https://example.com/logo.png" />
             <p class="field-tip">${t("settings_logo_tip")}</p>
           </div>
+
+          <div class="extract-banner" id="extractBanner" style="display:none"></div>
 
           <div class="form-group">
             <label>${t("settings_color")}</label>
@@ -252,10 +241,10 @@ async function renderSettings() {
               <input type="color" id="clubColor" value="${primaryColor}"
                 oninput="previewColor(this.value)" />
               <input type="text" id="clubColorText" value="${primaryColor}"
-                placeholder="#00c853"
-                oninput="syncColorPicker(this.value)" />
+                placeholder="#00c853" oninput="syncColorPicker(this.value)" />
             </div>
             <p class="field-tip">${t("settings_color_tip")}</p>
+            <div class="color-swatches" id="colorSwatches"></div>
           </div>
 
           <div class="form-group">
@@ -264,13 +253,11 @@ async function renderSettings() {
               <input type="color" id="clubSecondary" value="${secondaryColor}"
                 oninput="previewSecondary(this.value)" />
               <input type="text" id="clubSecondaryText" value="${secondaryColor}"
-                placeholder="#3b82f6"
-                oninput="syncSecondaryPicker(this.value)" />
+                placeholder="#3b82f6" oninput="syncSecondaryPicker(this.value)" />
             </div>
             <p class="field-tip">${t("settings_secondary_tip")}</p>
           </div>
 
-          <!-- Color Preview -->
           <div class="color-preview-grid">
             <div>
               <p class="field-tip" style="margin-bottom:.4rem">☀️ ${t("settings_light_preview")}</p>
@@ -283,19 +270,19 @@ async function renderSettings() {
           </div>
 
           <div class="form-actions">
+            <button class="btn btn-ghost" id="reExtractBtn">🎨 ${t("settings_extract")}</button>
             <button class="btn btn-primary" id="saveClubBtn">${t("form_save")}</button>
           </div>
           `
-              : `
-          <p style="margin-top:1rem;color:var(--text-muted);font-size:.88rem">
-            ${t("settings_readonly")}
-          </p>`
+              : `<p style="margin-top:1rem;color:var(--text-muted);font-size:.88rem">
+                  ${t("settings_readonly")}
+                </p>`
           }
         </div>
 
         <!-- Members -->
         <div class="card">
-          <div class="card-title">👥 ${t("settings_members")}</div>
+          <div class="card-title"><span class="dot"></span> ${t("settings_members")}</div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -313,7 +300,7 @@ async function renderSettings() {
                     <td><strong>${m.name}</strong></td>
                     <td style="color:var(--text-muted);font-size:.85rem">${m.email}</td>
                     <td>
-                      <span class="badge badge-${m.role === "admin" ? "green" : "blue"}">
+                      <span class="badge badge-${m.role === "admin" ? "primary" : "secondary"}">
                         ${m.role === "admin" ? t("role_admin") : t("role_analyst")}
                       </span>
                     </td>
@@ -327,8 +314,8 @@ async function renderSettings() {
           ${
             isAdmin
               ? `
-          <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
-            <div class="card-title">➕ ${t("settings_add_analyst")}</div>
+          <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+            <div class="card-title"><span class="dot"></span> ${t("settings_add_analyst")}</div>
             <div class="form-group">
               <label>${t("form_name")}</label>
               <input type="text" id="analystName" placeholder="Carlos Analyst" />
@@ -348,22 +335,74 @@ async function renderSettings() {
               : ""
           }
         </div>
-
       </div>`;
 
+    renderLogoPreview();
     updateColorPreview();
 
-    if (isAdmin) {
-      document
-        .getElementById("saveClubBtn")
-        .addEventListener("click", saveClub);
-      document
-        .getElementById("addAnalystBtn")
-        .addEventListener("click", addAnalyst);
-    }
+    if (isAdmin) wireSettings();
   } catch (e) {
     showAlert(e.message);
   }
+}
+
+function wireSettings() {
+  document.getElementById("saveClubBtn").addEventListener("click", saveClub);
+  document
+    .getElementById("addAnalystBtn")
+    .addEventListener("click", addAnalyst);
+
+  const fileInput = document.getElementById("logoFile");
+  document
+    .getElementById("uploadBtn")
+    .addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      document.getElementById("clubLogo").value = dataUrl;
+      await setLogo(dataUrl);
+    } catch (_) {
+      showAlert(t("settings_extract_fail"));
+    }
+  });
+
+  const urlInput = document.getElementById("clubLogo");
+  urlInput.addEventListener("change", () => {
+    if (urlInput.value.trim()) setLogo(urlInput.value.trim());
+    else renderLogoPreview();
+  });
+
+  document.getElementById("reExtractBtn").addEventListener("click", () => {
+    if (_logoSrc) extractAndApply(_logoSrc);
+    else showAlert(t("settings_extract_fail"));
+  });
+
+  const drop = document.getElementById("logoDrop");
+  ["dragenter", "dragover"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      drop.classList.add("dragover");
+    }),
+  );
+  ["dragleave", "drop"].forEach((ev) =>
+    drop.addEventListener(ev, (e) => {
+      e.preventDefault();
+      drop.classList.remove("dragover");
+    }),
+  );
+  drop.addEventListener("drop", async (e) => {
+    const file = e.dataTransfer.files[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      document.getElementById("clubLogo").value = dataUrl;
+      await setLogo(dataUrl);
+    } catch (_) {
+      showAlert(t("settings_extract_fail"));
+    }
+  });
 }
 
 async function saveClub() {
@@ -392,8 +431,8 @@ async function saveClub() {
     localStorage.setItem("clubLogo", data.logoUrl || "");
     localStorage.setItem("clubName", data.name);
 
-    applyPrimaryColor(data.primaryColor);
-    applySecondaryColor(data.secondaryColor);
+    applyPrimaryColor(data.primaryColor, true);
+    applySecondaryColor(data.secondaryColor, true);
     updateNavBrand(data.logoUrl, data.name);
     showAlert(t("settings_saved"), "success");
   } catch (e) {

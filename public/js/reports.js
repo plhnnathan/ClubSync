@@ -7,7 +7,7 @@ async function renderReports() {
     document.getElementById("app").innerHTML = `
       <div class="page-header">
         <div>
-          <h2 class="page-title">📋 ${t("reports_title")}</h2>
+          <h2 class="page-title"><span class="emoji">📋</span> ${t("reports_title")}</h2>
           <p class="page-subtitle">${data.length} ${t("dashboard_reports").toLowerCase()}</p>
         </div>
         <button class="btn btn-primary" id="addReportBtn">+ ${t("reports_add")}</button>

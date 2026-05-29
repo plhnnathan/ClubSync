@@ -10,19 +10,15 @@ html {
 }
 
 :root {
-  --green: #00c853;
-  --green-dark: #009624;
-  --green-dim: #064e3b;
-  --red: #ef4444;
-  --red-dim: #450a0a;
-  --yellow: #f59e0b;
-  --yellow-dim: #451a03;
-  --blue: #3b82f6;
-  --blue-dim: #1e3a5f;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --transition: 0.18s ease;
+  --primary: #00c853;
+  --primary-strong: #009624;
+  --primary-soft: #064e3b;
+  --on-primary: #000000;
+
+  --secondary: #3b82f6;
+  --secondary-strong: #2563eb;
+  --secondary-soft: #1e3a5f;
+  --on-secondary: #ffffff;
 
   --bg: #0a0e1a;
   --surface: #111827;
@@ -32,6 +28,17 @@ html {
   --text: #f9fafb;
   --text-muted: #9ca3af;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Semantic */
+  --red: #ef4444;
+  --red-soft: #450a0a;
+  --yellow: #f59e0b;
+  --yellow-soft: #451a03;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --transition: 0.18s ease;
 }
 
 body.light {
@@ -43,10 +50,10 @@ body.light {
   --text: #111827;
   --text-muted: #6b7280;
   --shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  --red-dim: #fee2e2;
-  --green-dim: #dcfce7;
-  --blue-dim: #dbeafe;
-  --yellow-dim: #fef9c3;
+  --red-soft: #fee2e2;
+  --primary-soft: #dcfce7;
+  --secondary-soft: #dbeafe;
+  --yellow-soft: #fef9c3;
 }
 
 body {

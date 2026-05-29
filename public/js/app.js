@@ -1,47 +1,18 @@
-let currentTheme = localStorage.getItem("theme") || "light";
-
-function applyTheme() {
-  if (currentTheme === "light") {
-    document.body.classList.add("light");
-    document.body.classList.remove("dark");
-  } else {
-    document.body.classList.remove("light");
-    document.body.classList.add("dark");
-  }
-  const navBtn = document.getElementById("themeBtn");
-  if (navBtn) navBtn.textContent = currentTheme === "light" ? "🌙" : "☀️";
-  updateAuthThemeBtn();
-}
-
-function updateAuthThemeBtn() {
-  const authBtn = document.getElementById("authThemeBtn");
-  if (authBtn) authBtn.textContent = currentTheme === "light" ? "🌙" : "☀️";
-}
-
-function toggleTheme() {
-  currentTheme = currentTheme === "light" ? "dark" : "light";
-  localStorage.setItem("theme", currentTheme);
-  applyTheme();
-}
-
 async function navigate(view) {
   if (!authToken) {
     renderLogin();
     return;
   }
 
-  // Load and apply club branding if not cached
   if (!localStorage.getItem("clubColor")) {
     try {
       const { data } = await request("GET", "/club");
       if (data.primaryColor) {
-        localStorage.setItem("clubColor", data.primaryColor);
-        localStorage.setItem("clubSecondary", data.secondaryColor || "#3b82f6");
-        localStorage.setItem("clubLogo", data.logoUrl || "");
-        localStorage.setItem("clubName", data.name || "ClubSync");
-        applyPrimaryColor(data.primaryColor);
-        applySecondaryColor(data.secondaryColor);
+        applyPrimaryColor(data.primaryColor, true);
+        applySecondaryColor(data.secondaryColor || "#3b82f6", true);
         updateNavBrand(data.logoUrl, data.name);
+        localStorage.setItem("clubName", data.name);
+        localStorage.setItem("clubLogo", data.logoUrl || "");
       }
     } catch (_) {}
   }
@@ -57,7 +28,7 @@ async function navigate(view) {
   if (currentUser) {
     const roleLabel =
       currentUser.role === "admin" ? t("role_admin") : t("role_analyst");
-    navUser.innerHTML = `${currentUser.name} <span class="badge badge-${currentUser.role === "admin" ? "green" : "blue"}" style="font-size:.65rem">${roleLabel}</span>`;
+    navUser.innerHTML = `${currentUser.name} <span class="badge badge-${currentUser.role === "admin" ? "primary" : "secondary"}" style="font-size:.65rem">${roleLabel}</span>`;
   }
 
   applyI18n();
@@ -74,20 +45,16 @@ async function navigate(view) {
 
 document.addEventListener("DOMContentLoaded", () => {
   applyTheme();
+  applyBrandColors();
 
-  const savedColor = localStorage.getItem("clubColor");
-  const savedSecondary = localStorage.getItem("clubSecondary");
   const savedLogo = localStorage.getItem("clubLogo");
   const savedName = localStorage.getItem("clubName");
-
-  if (savedColor) applyPrimaryColor(savedColor);
-  if (savedSecondary) applySecondaryColor(savedSecondary);
   if (savedName && authToken) updateNavBrand(savedLogo || "", savedName);
 
   const langBtn = document.getElementById("langBtn");
   const themeBtn = document.getElementById("themeBtn");
 
-  langBtn.textContent = currentLang === "pt" ? "🌐 EN" : "🌐 PT-BR";
+  langBtn.textContent = currentLang === "en" ? "🌐 PT-BR" : "🌐 EN";
 
   themeBtn.addEventListener("click", toggleTheme);
   langBtn.addEventListener("click", toggleLang);

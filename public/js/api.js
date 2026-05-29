@@ -30,17 +30,23 @@ async function request(method, path, body = null) {
 }
 
 function showAlert(message, type = "error") {
-  document.querySelectorAll(".alert").forEach((el) => el.remove());
+  let stack = document.getElementById("toast-stack");
+  if (!stack) {
+    stack = document.createElement("div");
+    stack.id = "toast-stack";
+    document.body.appendChild(stack);
+  }
 
   const alert = document.createElement("div");
   alert.className = `alert alert-${type}`;
   alert.textContent = message;
+  stack.appendChild(alert);
 
-  const target =
-    document.querySelector(".auth-box") || document.querySelector("#app");
-  if (target) target.prepend(alert);
-
-  setTimeout(() => alert.remove(), 4000);
+  setTimeout(() => {
+    alert.style.transition = "opacity .3s ease";
+    alert.style.opacity = "0";
+    setTimeout(() => alert.remove(), 300);
+  }, 3800);
 }
 
 function openModal(id) {

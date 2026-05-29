@@ -5,6 +5,7 @@ interface UpdateClubInput {
   name?: string;
   logoUrl?: string;
   primaryColor?: string;
+  secondaryColor?: string;
 }
 
 export class ClubService {
@@ -18,7 +19,7 @@ export class ClubService {
     const club = await Club.findByIdAndUpdate(
       clubId,
       { $set: input },
-      { new: true, runValidators: true },
+      { returnDocument: "after", runValidators: true },
     );
     if (!club) throw new Error("Club not found");
     return club;

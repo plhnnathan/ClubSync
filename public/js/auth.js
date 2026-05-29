@@ -10,56 +10,76 @@ function clearUser() {
   localStorage.removeItem("user");
 }
 
+function authThemeToggleHTML() {
+  const icon = currentTheme === "light" ? "🌙" : "☀️";
+  return `<button type="button" class="icon-btn" id="authThemeBtn" title="Theme">${icon}</button>`;
+}
+
 function renderLogin() {
   document.getElementById("navbar").classList.add("hidden");
   document.getElementById("app").innerHTML = `
     <div class="auth-wrapper">
       <div class="auth-box">
-        <div class="auth-theme-toggle">
-          <button id="authThemeBtn" onclick="toggleTheme()"></button>
+        <div class="auth-topbar">
+          ${langSwitcherHTML()}
+          ${authThemeToggleHTML()}
         </div>
-        <div class="auth-logo">⚽</div>
-        <h1 class="auth-title">ClubSync</h1>
+        <div class="auth-brand-mark">⚽</div>
+        <h1 class="auth-title">Club<b>Sync</b></h1>
         <p class="auth-subtitle">${t("login_subtitle")}</p>
+
         <div class="form-group">
           <label>${t("login_email")}</label>
-          <input type="email" id="loginEmail" placeholder="gmail.@club.com" autocomplete="email" />
+          <div class="input-with-icon">
+            <span class="ico">📧</span>
+            <input type="email" id="loginEmail" placeholder="you@club.com" autocomplete="email" />
+          </div>
         </div>
         <div class="form-group">
           <label>${t("login_password")}</label>
-          <input type="password" id="loginPassword" placeholder="••••••" autocomplete="current-password" />
+          <div class="input-with-icon">
+            <span class="ico">🔒</span>
+            <input type="password" id="loginPassword" placeholder="••••••" autocomplete="current-password" />
+          </div>
         </div>
         <button class="btn btn-primary" id="loginBtn">${t("login_btn")}</button>
         <p class="auth-divider">
-          ${t("login_toggle")} <a onclick="renderRegister()">${t("login_toggle_link")}</a>
+          ${t("login_toggle")} <a id="toRegister">${t("login_toggle_link")}</a>
         </p>
+        <div class="auth-foot">CLUBSYNC · FOOTBALL CLUB MANAGEMENT</div>
       </div>
     </div>`;
 
-  updateAuthThemeBtn();
+  wireAuthCommon();
   document.getElementById("loginBtn").addEventListener("click", doLogin);
+  document
+    .getElementById("toRegister")
+    .addEventListener("click", renderRegister);
   document.getElementById("loginPassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") doLogin();
   });
 }
 
 function renderRegister() {
+  document.getElementById("navbar").classList.add("hidden");
   document.getElementById("app").innerHTML = `
     <div class="auth-wrapper">
       <div class="auth-box">
-        <div class="auth-theme-toggle">
-          <button id="authThemeBtn" onclick="toggleTheme()"></button>
+        <div class="auth-topbar">
+          ${langSwitcherHTML()}
+          ${authThemeToggleHTML()}
         </div>
-        <div class="auth-logo">⚽</div>
-        <h1 class="auth-title">ClubSync</h1>
+        <div class="auth-brand-mark">⚽</div>
+        <h1 class="auth-title">Club<b>Sync</b></h1>
         <p class="auth-subtitle">${t("register_subtitle")}</p>
+
         <div class="form-group">
           <label>${t("register_name")}</label>
-          <input type="text" id="regName" placeholder="Hulk Paraiba" autocomplete="name" />
+          <input type="text" id="regName" placeholder="Hulk Paraíba" autocomplete="name" />
         </div>
         <div class="form-group">
           <label>${t("register_email")}</label>
-          <input type="email" id="regEmail" placeholder="you@gmail..com" autocomplete="email" />
+          <input type="email" id="regEmail" placeholder="you@club.com" autocomplete="email" />
         </div>
         <div class="form-group">
           <label>${t("register_password")}</label>
@@ -71,13 +91,21 @@ function renderRegister() {
         </div>
         <button class="btn btn-primary" id="registerBtn">${t("register_btn")}</button>
         <p class="auth-divider">
-          ${t("register_toggle")} <a onclick="renderLogin()">${t("register_toggle_link")}</a>
+          ${t("register_toggle")} <a id="toLogin">${t("register_toggle_link")}</a>
         </p>
+        <div class="auth-foot">CLUBSYNC · FOOTBALL CLUB MANAGEMENT</div>
       </div>
     </div>`;
 
-  updateAuthThemeBtn();
+  wireAuthCommon();
   document.getElementById("registerBtn").addEventListener("click", doRegister);
+  document.getElementById("toLogin").addEventListener("click", renderLogin);
+}
+
+function wireAuthCommon() {
+  bindLangSwitcher();
+  const themeBtn = document.getElementById("authThemeBtn");
+  if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
 }
 
 async function doLogin() {
@@ -124,5 +152,9 @@ async function doRegister() {
 function logout() {
   clearToken();
   clearUser();
+  localStorage.removeItem("clubColor");
+  localStorage.removeItem("clubSecondary");
+  localStorage.removeItem("clubLogo");
+  localStorage.removeItem("clubName");
   renderLogin();
 }

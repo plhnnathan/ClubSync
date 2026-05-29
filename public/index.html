@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ClubSync</title>
+    <meta name="theme-color" content="#00c853" />
+    <title>ClubSync — Football Club Management</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,11 +19,12 @@
   </head>
   <body class="light">
     <nav id="navbar" class="hidden">
+      <button class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
       <div class="nav-brand">
         <span class="nav-logo">⚽</span>
-        <span>ClubSync</span>
+        <span>Club<b>Sync</b></span>
       </div>
-      <div class="nav-links">
+      <div class="nav-links" id="navLinks">
         <button class="nav-btn" data-nav="dashboard" data-i18n="nav_dashboard">
           Dashboard
         </button>
@@ -38,13 +40,25 @@
       </div>
       <div class="nav-right">
         <span id="navUser" class="nav-user"></span>
-        <button id="themeBtn" class="btn-theme">🌙</button>
-        <button id="langBtn" class="btn-lang">🌐 ENG</button>
-        <button class="btn-logout" data-i18n="nav_logout">Logout</button>
+        <button
+          id="langBtn"
+          class="icon-btn"
+          title="Language"
+          onclick="cycleLang()"
+        >
+          🇬🇧 EN
+        </button>
+        <button id="themeBtn" class="icon-btn" title="Theme">🌙</button>
+        <button class="btn btn-danger btn-sm btn-logout" data-i18n="nav_logout">
+          Logout
+        </button>
       </div>
     </nav>
 
     <main id="app"></main>
+
+    <!-- Toast notifications -->
+    <div id="toast-stack"></div>
 
     <!-- Modal Player -->
     <div class="modal-overlay hidden" id="playerModal">
@@ -69,6 +83,7 @@
     </div>
 
     <script src="/js/i18n.js"></script>
+    <script src="/js/theme.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/dashboard.js"></script>

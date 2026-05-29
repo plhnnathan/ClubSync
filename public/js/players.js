@@ -8,7 +8,7 @@ async function renderPlayers() {
     document.getElementById("app").innerHTML = `
       <div class="page-header">
         <div>
-          <h2 class="page-title">👥 ${t("players_title")}</h2>
+          <h2 class="page-title"><span class="emoji">👥</span> ${t("players_title")}</h2>
           <p class="page-subtitle">${data.length} ${t("dashboard_total_players").toLowerCase()}</p>
         </div>
         ${isAdmin ? `<button class="btn btn-primary" id="addPlayerBtn">+ ${t("players_add")}</button>` : ""}
@@ -48,7 +48,7 @@ function buildPlayersTable(players, compact = false) {
           .map(
             (p) => `
           <tr>
-            <td><span class="badge badge-blue">${p.jerseyNumber}</span></td>
+            <td><span class="badge badge-secondary">${p.jerseyNumber}</span></td>
             <td><strong>${p.name}</strong></td>
             <td>${p.position}</td>
             ${!compact ? `<td>${p.dominantFoot}</td>` : ""}
@@ -218,20 +218,20 @@ async function viewPlayerStats(id) {
       </div>
 
       <div class="stats-grid" style="grid-template-columns:1fr 1fr;margin-bottom:1rem">
-        <div class="stat-card">
+        <div class="stat-card" style="--accent:var(--primary)">
           <div class="stat-number">${stats.matchesPlayed}</div>
           <div class="stat-label">${t("stats_matches")}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" style="color:#34d399">${stats.totalGoals}</div>
+        <div class="stat-card" style="--accent:#22c55e">
+          <div class="stat-number">${stats.totalGoals}</div>
           <div class="stat-label">${t("stats_goals")}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" style="color:#93c5fd">${stats.totalAssists}</div>
+        <div class="stat-card" style="--accent:var(--secondary)">
+          <div class="stat-number">${stats.totalAssists}</div>
           <div class="stat-label">${t("stats_assists")}</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number" style="color:var(--text-muted)">${stats.totalMinutesPlayed}</div>
+        <div class="stat-card" style="--accent:var(--text-muted)">
+          <div class="stat-number">${stats.totalMinutesPlayed}</div>
           <div class="stat-label">${t("stats_minutes")}</div>
         </div>
       </div>
@@ -239,10 +239,10 @@ async function viewPlayerStats(id) {
       <div class="card" style="margin:0">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
           <span style="font-size:.85rem;color:var(--text-muted)">${t("stats_avg")}</span>
-          <strong style="color:var(--yellow);font-size:1.1rem">${avg}</strong>
+          <strong style="color:var(--warning);font-size:1.1rem">${avg}</strong>
         </div>
         <div class="rating-track">
-          <div class="rating-fill" style="width:${pct}%;background:${avg >= 7 ? "var(--green)" : avg >= 5 ? "var(--yellow)" : "var(--red)"}"></div>
+          <div class="rating-fill" style="width:${pct}%;background:${avg >= 7 ? "var(--primary)" : avg >= 5 ? "var(--warning)" : "var(--danger)"}"></div>
         </div>
       </div>`;
 
