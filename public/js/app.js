@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const langBtn = document.getElementById("langBtn");
   const themeBtn = document.getElementById("themeBtn");
 
-  langBtn.textContent = currentLang === "en" ? "🌐 EN" : "🌐 PT-BR";
+  langBtn.textContent = currentLang === "pt" ? "🌐 EN" : "🌐 PT-BR";
 
   themeBtn.addEventListener("click", toggleTheme);
   langBtn.addEventListener("click", toggleLang);
