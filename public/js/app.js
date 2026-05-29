@@ -59,7 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
   themeBtn.addEventListener("click", toggleTheme);
   langBtn.addEventListener("click", toggleLang);
 
-  document.querySelector(".btn-logout").addEventListener("click", logout);
+  const logoutBtn = document.querySelector(".btn-logout");
+  if (logoutBtn) logoutBtn.addEventListener("click", () => logout());
 
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => navigate(btn.dataset.nav));
