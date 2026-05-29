@@ -32,6 +32,9 @@
         <button class="nav-btn" data-nav="reports" data-i18n="nav_reports">
           Match Reports
         </button>
+        <button class="nav-btn" data-nav="settings" data-i18n="nav_settings">
+          Settings
+        </button>
       </div>
       <div class="nav-right">
         <span id="navUser" class="nav-user"></span>
@@ -43,6 +46,7 @@
 
     <main id="app"></main>
 
+    <!-- Modal Player -->
     <div class="modal-overlay hidden" id="playerModal">
       <div class="modal">
         <div class="modal-header">
@@ -53,6 +57,7 @@
       </div>
     </div>
 
+    <!-- Modal Report -->
     <div class="modal-overlay hidden" id="reportModal">
       <div class="modal">
         <div class="modal-header">
@@ -61,21 +66,6 @@
         </div>
         <div id="reportModalBody"></div>
       </div>
-    </div>
-
-    <div class="nav-links">
-      <button class="nav-btn" data-nav="dashboard" data-i18n="nav_dashboard">
-        Dashboard
-      </button>
-      <button class="nav-btn" data-nav="players" data-i18n="nav_players">
-        Players
-      </button>
-      <button class="nav-btn" data-nav="reports" data-i18n="nav_reports">
-        Match Reports
-      </button>
-      <button class="nav-btn" data-nav="settings" data-i18n="nav_settings">
-        Settings
-      </button>
     </div>
 
     <script src="/js/i18n.js"></script>
