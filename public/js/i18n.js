@@ -6,7 +6,6 @@ const translations = {
     nav_reports: "Match Reports",
     nav_settings: "Settings",
     nav_logout: "Logout",
-
     auth_language: "Language",
     login_subtitle: "Sign in to your club",
     login_email: "Email",
@@ -14,7 +13,6 @@ const translations = {
     login_btn: "Sign In",
     login_toggle: "Don't have an account?",
     login_toggle_link: "Register",
-
     register_subtitle: "Set up your club on ClubSync",
     register_name: "Full Name",
     register_email: "Email",
@@ -23,13 +21,11 @@ const translations = {
     register_btn: "Create Account",
     register_toggle: "Already have an account?",
     register_toggle_link: "Sign In",
-
     dashboard_welcome: "Welcome",
     dashboard_total_players: "Total Players",
     dashboard_active: "Active",
     dashboard_injured: "Medical Dept.",
     dashboard_reports: "Match Reports",
-
     players_title: "Squad",
     players_add: "Add Player",
     players_name: "Name",
@@ -38,11 +34,9 @@ const translations = {
     players_foot: "Foot",
     players_status: "Status",
     players_actions: "Actions",
-
     btn_stats: "Stats",
     btn_edit: "Edit",
     btn_delete: "Delete",
-
     reports_title: "Match Reports",
     reports_add: "Add Report",
     reports_player: "Player",
@@ -53,11 +47,9 @@ const translations = {
     reports_assists: "Assists",
     reports_rating: "Rating",
     reports_actions: "Actions",
-
     modal_add_player: "Add Player",
     modal_edit_player: "Edit Player",
     modal_add_report: "Add Match Report",
-
     form_name: "Name",
     form_position: "Position",
     form_jersey: "Jersey Number",
@@ -72,22 +64,18 @@ const translations = {
     form_rating: "Sofascore Rating (0-10)",
     form_save: "Save",
     form_cancel: "Cancel",
-
     confirm_delete: "Are you sure you want to delete this?",
     no_data: "No records found.",
     loading: "Loading",
-
     stats_title: "Player Stats",
     stats_matches: "Matches",
     stats_goals: "Goals",
     stats_assists: "Assists",
     stats_minutes: "Minutes",
     stats_avg: "Avg Rating",
-
     role_admin: "Admin",
     role_analyst: "Analyst",
     err_fill: "Please fill in all required fields.",
-
     settings_title: "Club Settings",
     settings_subtitle: "Manage your club profile and members",
     settings_club: "Club Profile",
@@ -117,6 +105,7 @@ const translations = {
     settings_preview: "Preview",
     settings_dark_preview: "Dark mode preview",
     settings_light_preview: "Light mode preview",
+    nav_back_home: "Back to Home",
   },
 
   pt: {
@@ -126,7 +115,6 @@ const translations = {
     nav_reports: "Avaliações",
     nav_settings: "Configurações",
     nav_logout: "Sair",
-
     auth_language: "Idioma",
     login_subtitle: "Acesse o seu clube",
     login_email: "E-mail",
@@ -134,7 +122,6 @@ const translations = {
     login_btn: "Entrar",
     login_toggle: "Não tem uma conta?",
     login_toggle_link: "Cadastre-se",
-
     register_subtitle: "Configure seu clube no ClubSync",
     register_name: "Nome Completo",
     register_email: "E-mail",
@@ -143,13 +130,11 @@ const translations = {
     register_btn: "Criar Conta",
     register_toggle: "Já tem uma conta?",
     register_toggle_link: "Entrar",
-
     dashboard_welcome: "Bem-vindo",
     dashboard_total_players: "Total de Jogadores",
     dashboard_active: "Ativos",
     dashboard_injured: "Departamento Médico",
     dashboard_reports: "Avaliações",
-
     players_title: "Elenco",
     players_add: "Adicionar Jogador",
     players_name: "Nome",
@@ -158,11 +143,9 @@ const translations = {
     players_foot: "Pé",
     players_status: "Status",
     players_actions: "Ações",
-
     btn_stats: "Stats",
     btn_edit: "Editar",
     btn_delete: "Excluir",
-
     reports_title: "Avaliações de Partida",
     reports_add: "Adicionar Avaliação",
     reports_player: "Jogador",
@@ -173,11 +156,9 @@ const translations = {
     reports_assists: "Assistências",
     reports_rating: "Nota",
     reports_actions: "Ações",
-
     modal_add_player: "Adicionar Jogador",
     modal_edit_player: "Editar Jogador",
     modal_add_report: "Adicionar Avaliação",
-
     form_name: "Nome",
     form_position: "Posição",
     form_jersey: "Número da Camisa",
@@ -192,22 +173,18 @@ const translations = {
     form_rating: "Nota Sofascore (0-10)",
     form_save: "Salvar",
     form_cancel: "Cancelar",
-
     confirm_delete: "Tem certeza que deseja excluir?",
     no_data: "Nenhum registro encontrado.",
     loading: "Carregando",
-
     stats_title: "Estatísticas",
     stats_matches: "Partidas",
     stats_goals: "Gols",
     stats_assists: "Assistências",
     stats_minutes: "Minutos",
     stats_avg: "Nota Média",
-
     role_admin: "Admin",
     role_analyst: "Analista",
     err_fill: "Preencha todos os campos obrigatórios.",
-
     settings_title: "Configurações do Clube",
     settings_subtitle: "Gerencie o perfil e os membros do seu clube",
     settings_club: "Perfil do Clube",
@@ -236,6 +213,7 @@ const translations = {
     settings_preview: "Prévia",
     settings_dark_preview: "Prévia modo escuro",
     settings_light_preview: "Prévia modo claro",
+    nav_back_home: "Voltar ao Início",
   },
 
   es: {
@@ -245,7 +223,6 @@ const translations = {
     nav_reports: "Informes",
     nav_settings: "Ajustes",
     nav_logout: "Salir",
-
     auth_language: "Idioma",
     login_subtitle: "Accede a tu club",
     login_email: "Correo",
@@ -253,7 +230,6 @@ const translations = {
     login_btn: "Entrar",
     login_toggle: "¿No tienes una cuenta?",
     login_toggle_link: "Regístrate",
-
     register_subtitle: "Configura tu club en ClubSync",
     register_name: "Nombre Completo",
     register_email: "Correo",
@@ -262,13 +238,11 @@ const translations = {
     register_btn: "Crear Cuenta",
     register_toggle: "¿Ya tienes una cuenta?",
     register_toggle_link: "Entrar",
-
     dashboard_welcome: "Bienvenido",
     dashboard_total_players: "Total de Jugadores",
     dashboard_active: "Activos",
     dashboard_injured: "Dpto. Médico",
     dashboard_reports: "Informes",
-
     players_title: "Plantilla",
     players_add: "Añadir Jugador",
     players_name: "Nombre",
@@ -277,11 +251,9 @@ const translations = {
     players_foot: "Pie",
     players_status: "Estado",
     players_actions: "Acciones",
-
     btn_stats: "Stats",
     btn_edit: "Editar",
     btn_delete: "Eliminar",
-
     reports_title: "Informes de Partido",
     reports_add: "Añadir Informe",
     reports_player: "Jugador",
@@ -292,11 +264,9 @@ const translations = {
     reports_assists: "Asistencias",
     reports_rating: "Nota",
     reports_actions: "Acciones",
-
     modal_add_player: "Añadir Jugador",
     modal_edit_player: "Editar Jugador",
     modal_add_report: "Añadir Informe",
-
     form_name: "Nombre",
     form_position: "Posición",
     form_jersey: "Número de Dorsal",
@@ -311,22 +281,18 @@ const translations = {
     form_rating: "Nota Sofascore (0-10)",
     form_save: "Guardar",
     form_cancel: "Cancelar",
-
     confirm_delete: "¿Seguro que quieres eliminar esto?",
     no_data: "No se encontraron registros.",
     loading: "Cargando",
-
     stats_title: "Estadísticas",
     stats_matches: "Partidos",
     stats_goals: "Goles",
     stats_assists: "Asistencias",
     stats_minutes: "Minutos",
     stats_avg: "Nota Media",
-
     role_admin: "Admin",
     role_analyst: "Analista",
     err_fill: "Por favor completa todos los campos obligatorios.",
-
     settings_title: "Ajustes del Club",
     settings_subtitle: "Gestiona el perfil y los miembros de tu club",
     settings_club: "Perfil del Club",
@@ -355,6 +321,7 @@ const translations = {
     settings_preview: "Vista previa",
     settings_dark_preview: "Vista previa modo oscuro",
     settings_light_preview: "Vista previa modo claro",
+    nav_back_home: "Volver al Inicio",
   },
 };
 
@@ -382,6 +349,7 @@ function setLang(lang) {
   if (!translations[lang]) return;
   currentLang = lang;
   localStorage.setItem("lang", lang);
+  updateLangBtn();
   applyI18n();
 
   const active = document.querySelector(".nav-btn.active");
@@ -396,8 +364,8 @@ function setLang(lang) {
 function langSwitcherHTML() {
   return `<div class="segmented" id="langSwitcher">
     ${LANGS.map(
-      (l) => `<button type="button" data-lang="${l.code}"
-        class="${l.code === currentLang ? "active" : ""}">
+      (l) => `
+      <button type="button" data-lang="${l.code}" class="${l.code === currentLang ? "active" : ""}">
         <span>${l.flag}</span><span>${l.label}</span>
       </button>`,
     ).join("")}
@@ -414,12 +382,15 @@ function cycleLang() {
   const idx = LANGS.findIndex((l) => l.code === currentLang);
   const next = LANGS[(idx + 1) % LANGS.length];
   setLang(next.code);
-  updateLangBtn();
 }
 
 function updateLangBtn() {
   const btn = document.getElementById("langBtn");
   if (!btn) return;
   const l = LANGS.find((x) => x.code === currentLang) || LANGS[0];
-  btn.textContent = `${l.flag} ${l.label}`;
+  btn.innerHTML = `${l.flag} ${l.label}`;
+}
+
+function toggleLang() {
+  cycleLang();
 }
