@@ -1,6 +1,6 @@
 async function navigate(view) {
   if (!authToken) {
-    renderLogin();
+    if (typeof renderLogin === "function") renderLogin();
     return;
   }
 
@@ -20,9 +20,12 @@ async function navigate(view) {
         localStorage.setItem("clubLogo", data.logoUrl || "");
         localStorage.setItem("clubName", data.name || "ClubSync");
 
-        applyPrimaryColor(finalPrimary);
-        applySecondaryColor(finalSecondary);
-        updateNavBrand(data.logoUrl, data.name);
+        if (typeof applyPrimaryColor === "function")
+          applyPrimaryColor(finalPrimary);
+        if (typeof applySecondaryColor === "function")
+          applySecondaryColor(finalSecondary);
+        if (typeof updateNavBrand === "function")
+          updateNavBrand(data.logoUrl, data.name);
       }
     } catch (_) {}
   }
@@ -39,7 +42,14 @@ async function navigate(view) {
   const navUser = document.getElementById("navUser");
   if (currentUser && navUser) {
     const roleLabel =
-      currentUser.role === "admin" ? t("role_admin") : t("role_analyst");
+      currentUser.role === "admin"
+        ? typeof t === "function"
+          ? t("role_admin")
+          : "Admin"
+        : typeof t === "function"
+          ? t("role_analyst")
+          : "Analyst";
+
     const initials = (currentUser.name || "?")
       .split(" ")
       .map((p) => p[0])
@@ -55,33 +65,47 @@ async function navigate(view) {
       </div>`;
   }
 
-  applyI18n();
+  if (typeof applyI18n === "function") applyI18n();
 
-  const views = {
-    dashboard: renderDashboard,
-    players: renderPlayers,
-    reports: renderReports,
-    games: renderGames,
-    settings: renderSettings,
-  };
+  const views = {};
+  if (typeof renderDashboard === "function") views.dashboard = renderDashboard;
+  if (typeof renderPlayers === "function") views.players = renderPlayers;
+  if (typeof renderReports === "function") views.reports = renderReports;
+  if (typeof renderGames === "function") views.games = renderGames;
+  if (typeof renderSettings === "function") views.settings = renderSettings;
 
-  if (views[view]) views[view]();
+  if (views[view]) {
+    views[view]();
+  } else {
+    document.getElementById("app").innerHTML = `
+      <div class="page-header">
+        <div><h2 class="page-title"><span class="emoji">🚧</span> Erro de Carregamento</h2></div>
+      </div>
+      <div class="empty-state">
+        <span class="empty-emoji">⚠️</span>
+        <p>O arquivo responsável por esta tela não foi encontrado ou possui um erro de sintaxe.</p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">Verifique se você copiou o código completo (incluindo as chaves finais <b>}</b>) no arquivo correspondente.</p>
+      </div>`;
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  applyTheme();
+  if (typeof applyTheme === "function") applyTheme();
 
   if (authToken) {
     const savedLogo = localStorage.getItem("clubLogo");
     const savedName = localStorage.getItem("clubName");
-    if (savedName) updateNavBrand(savedLogo || "", savedName);
+    if (savedName && typeof updateNavBrand === "function")
+      updateNavBrand(savedLogo || "", savedName);
   }
 
   const themeBtn = document.getElementById("themeBtn");
-  if (themeBtn) themeBtn.addEventListener("click", toggleTheme);
+  if (themeBtn && typeof toggleTheme === "function")
+    themeBtn.addEventListener("click", toggleTheme);
 
   const logoutBtn = document.querySelector(".btn-logout");
-  if (logoutBtn) logoutBtn.addEventListener("click", logout);
+  if (logoutBtn && typeof logout === "function")
+    logoutBtn.addEventListener("click", logout);
 
   document.querySelectorAll(".nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => navigate(btn.dataset.nav));
@@ -102,15 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.querySelectorAll(".modal-close").forEach((btn) => {
-    btn.addEventListener("click", () => closeModal(btn.dataset.close));
+    btn.addEventListener("click", () => {
+      if (typeof closeModal === "function") closeModal(btn.dataset.close);
+    });
   });
 
   document.querySelectorAll(".modal-overlay").forEach((overlay) => {
     overlay.addEventListener("click", (e) => {
-      if (e.target === overlay) closeModal(overlay.id);
+      if (e.target === overlay && typeof closeModal === "function")
+        closeModal(overlay.id);
     });
   });
 
   if (authToken) navigate("dashboard");
-  else renderLogin();
+  else if (typeof renderLogin === "function") renderLogin();
 });
