@@ -5,6 +5,20 @@ async function renderPlayers() {
     const { data } = await request("GET", "/players");
     const isAdmin = currentUser.role === "admin";
 
+    let tableContent = "";
+
+    if (data.length === 0) {
+      tableContent = `
+        <div class="empty-state">
+          <span class="empty-emoji">🤷‍♂️</span>
+          <p>${t("no_data")}</p>
+          ${isAdmin ? `<button class="btn btn-primary" onclick="seedGaloPlayers()" style="margin-top: 1rem;">🐔 Carregar Elenco do Galo</button>` : ""}
+        </div>
+      `;
+    } else {
+      tableContent = buildPlayersTable(data);
+    }
+
     document.getElementById("app").innerHTML = `
       <div class="page-header">
         <div>
@@ -14,21 +28,93 @@ async function renderPlayers() {
         ${isAdmin ? `<button class="btn btn-primary" id="addPlayerBtn">+ ${t("players_add")}</button>` : ""}
       </div>
       <div class="card">
-        <div class="table-wrap">${buildPlayersTable(data)}</div>
+        <div class="table-wrap">${tableContent}</div>
       </div>`;
 
-    if (isAdmin) {
+    if (isAdmin && data.length > 0) {
       document
         .getElementById("addPlayerBtn")
         .addEventListener("click", () => openPlayerModal());
+    } else if (isAdmin && data.length === 0) {
+      const addBtn = document.getElementById("addPlayerBtn");
+      if (addBtn) addBtn.addEventListener("click", () => openPlayerModal());
     }
   } catch (e) {
     showAlert(e.message);
   }
 }
 
+async function seedGaloPlayers() {
+  const galo = [
+    {
+      name: "Everson",
+      jerseyNumber: 22,
+      position: "Goalkeeper",
+      dominantFoot: "Right",
+      status: "Active",
+    },
+    {
+      name: "Guilherme Arana",
+      jerseyNumber: 13,
+      position: "Left Back",
+      dominantFoot: "Left",
+      status: "Active",
+    },
+    {
+      name: "Renzo Saravia",
+      jerseyNumber: 26,
+      position: "Center Back",
+      dominantFoot: "Right",
+      status: "Active",
+    },
+    {
+      name: "Rodrigo Battaglia",
+      jerseyNumber: 21,
+      position: "Defensive Midfielder",
+      dominantFoot: "Right",
+      status: "Active",
+    },
+    {
+      name: "Gustavo Scarpa",
+      jerseyNumber: 6,
+      position: "Attacking Midfielder",
+      dominantFoot: "Left",
+      status: "Active",
+    },
+    {
+      name: "Matías Zaracho",
+      jerseyNumber: 15,
+      position: "Midfielder",
+      dominantFoot: "Right",
+      status: "Active",
+    },
+    {
+      name: "Paulinho",
+      jerseyNumber: 10,
+      position: "Striker",
+      dominantFoot: "Right",
+      status: "Active",
+    },
+    {
+      name: "Hulk",
+      jerseyNumber: 7,
+      position: "Striker",
+      dominantFoot: "Left",
+      status: "Active",
+    },
+  ];
+  try {
+    for (const p of galo) {
+      await request("POST", "/players", p);
+    }
+    renderPlayers();
+    showAlert("Elenco do Galo carregado com sucesso!", "success");
+  } catch (e) {
+    showAlert("Erro ao carregar elenco: " + e.message);
+  }
+}
+
 function buildPlayersTable(players, compact = false) {
-  if (!players.length) return `<p class="empty-state">${t("no_data")}</p>`;
   const isAdmin = currentUser.role === "admin";
 
   return `

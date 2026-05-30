@@ -112,6 +112,7 @@ function previewColor(value) {
   applyPrimaryColor(value);
   updateColorPreview();
 }
+
 function syncColorPicker(value) {
   if (!isHex(value)) return;
   const picker = document.getElementById("clubColor");
@@ -119,12 +120,14 @@ function syncColorPicker(value) {
   applyPrimaryColor(value);
   updateColorPreview();
 }
+
 function previewSecondary(value) {
   const text = document.getElementById("clubSecondaryText");
   if (text) text.value = value;
   applySecondaryColor(value);
   updateColorPreview();
 }
+
 function syncSecondaryPicker(value) {
   if (!isHex(value)) return;
   const picker = document.getElementById("clubSecondary");
@@ -201,199 +204,153 @@ async function renderSettings() {
     document.getElementById("app").innerHTML = `
       <div class="page-header">
         <div>
-          <h2 class="page-title">⚙️ ${t("settings_title")}</h2>
+          <h2 class="page-title"><span class="emoji">⚙️</span> ${t("settings_title")}</h2>
           <p class="page-subtitle">${t("settings_subtitle")}</p>
         </div>
-        <button class="icon-btn" onclick="navigate('dashboard')">
-          ← ${t("nav_back_home")}
-        </button>
       </div>
 
-      <div class="settings-layout">
+      <div class="settings-grid">
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> ${t("settings_club")}</div>
 
-        <!-- Sidebar -->
-        <div class="settings-sidebar">
-          <div class="settings-sidebar-logo">
-            ${
-              club.logoUrl
-                ? `<img src="${club.logoUrl}" alt="${club.name}" />`
-                : `<div class="sidebar-logo-placeholder">⚽</div>`
-            }
-            <div class="settings-sidebar-name">${club.name}</div>
-          </div>
-          <nav class="settings-sidebar-nav">
-            <button class="settings-sidebar-btn active" onclick="scrollToSection('sectionProfile')">
-              🏟️ ${t("settings_club")}
-            </button>
-            <button class="settings-sidebar-btn" onclick="scrollToSection('sectionColors')">
-              🎨 ${t("settings_color")}
-            </button>
-            <button class="settings-sidebar-btn" onclick="scrollToSection('sectionMembers')">
-              👥 ${t("settings_members")}
-            </button>
-          </nav>
-        </div>
-
-        <!-- Content -->
-        <div class="settings-content">
-
-          <!-- Club Profile section -->
-          <div class="card" id="sectionProfile">
-            <div class="card-title"><span class="dot"></span> ${t("settings_club")}</div>
-
-            <div class="club-logo-preview" id="logoDrop"></div>
-
-            ${
-              isAdmin
-                ? `
-            <div class="upload-row">
-              <button class="btn btn-ghost btn-block" id="uploadBtn">⬆️ ${t("settings_upload")}</button>
-              <input type="file" id="logoFile" accept="image/*" class="hidden" />
-            </div>
-
-            <div class="form-group" style="margin-top:1rem">
-              <label>${t("settings_club_name")}</label>
-              <input type="text" id="clubName" value="${club.name}" oninput="renderLogoPreview()" />
-            </div>
-
-            <div class="form-group">
-              <label>${t("settings_logo_url")}</label>
-              <input type="url" id="clubLogo" value="${club.logoUrl || ""}"
-                placeholder="https://example.com/logo.png" />
-              <p class="field-tip">${t("settings_logo_tip")}</p>
-            </div>
-            `
-                : `<p style="color:var(--text-muted);font-size:.88rem">${t("settings_readonly")}</p>`
-            }
+          <div class="form-group" style="margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border)">
+            <label>Idioma da Plataforma</label>
+            ${typeof langSwitcherHTML === "function" ? langSwitcherHTML() : ""}
           </div>
 
-          <!-- Colors section -->
+          <div class="club-logo-preview" id="logoDrop"></div>
+
           ${
             isAdmin
               ? `
-          <div class="card" id="sectionColors">
-            <div class="card-title"><span class="dot"></span> 🎨 ${t("settings_color")}</div>
+          <div class="upload-row">
+            <button class="btn btn-ghost btn-block" id="uploadBtn">⬆️ ${t("settings_upload")}</button>
+            <input type="file" id="logoFile" accept="image/*" class="hidden" />
+          </div>
 
-            <div class="extract-banner" id="extractBanner" style="display:none"></div>
+          <div class="form-group" style="margin-top:1rem">
+            <label>${t("settings_club_name")}</label>
+            <input type="text" id="clubName" value="${club.name}" oninput="renderLogoPreview()" />
+          </div>
 
-            <div class="form-group">
-              <label>${t("settings_color")}</label>
-              <div class="color-input-row">
-                <input type="color" id="clubColor" value="${primaryColor}"
-                  oninput="previewColor(this.value)" />
-                <input type="text" id="clubColorText" value="${primaryColor}"
-                  placeholder="#00c853" oninput="syncColorPicker(this.value)" />
-              </div>
-              <p class="field-tip">${t("settings_color_tip")}</p>
-              <div class="color-swatches" id="colorSwatches"></div>
+          <div class="form-group">
+            <label>${t("settings_logo_url")}</label>
+            <input type="url" id="clubLogo" value="${club.logoUrl || ""}"
+              placeholder="https://example.com/logo.png" />
+            <p class="field-tip">${t("settings_logo_tip")}</p>
+          </div>
+
+          <div class="extract-banner" id="extractBanner" style="display:none"></div>
+
+          <div class="form-group">
+            <label>${t("settings_color")}</label>
+            <div class="color-input-row">
+              <input type="color" id="clubColor" value="${primaryColor}"
+                oninput="previewColor(this.value)" />
+              <input type="text" id="clubColorText" value="${primaryColor}"
+                placeholder="#00c853" oninput="syncColorPicker(this.value)" />
             </div>
+            <p class="field-tip">${t("settings_color_tip")}</p>
+            <div class="color-swatches" id="colorSwatches"></div>
+          </div>
 
-            <div class="form-group">
-              <label>${t("settings_secondary")}</label>
-              <div class="color-input-row">
-                <input type="color" id="clubSecondary" value="${secondaryColor}"
-                  oninput="previewSecondary(this.value)" />
-                <input type="text" id="clubSecondaryText" value="${secondaryColor}"
-                  placeholder="#3b82f6" oninput="syncSecondaryPicker(this.value)" />
-              </div>
-              <p class="field-tip">${t("settings_secondary_tip")}</p>
+          <div class="form-group">
+            <label>${t("settings_secondary")}</label>
+            <div class="color-input-row">
+              <input type="color" id="clubSecondary" value="${secondaryColor}"
+                oninput="previewSecondary(this.value)" />
+              <input type="text" id="clubSecondaryText" value="${secondaryColor}"
+                placeholder="#3b82f6" oninput="syncSecondaryPicker(this.value)" />
             </div>
+            <p class="field-tip">${t("settings_secondary_tip")}</p>
+          </div>
 
-            <div class="color-preview-grid">
-              <div>
-                <p class="field-tip" style="margin-bottom:.4rem">☀️ ${t("settings_light_preview")}</p>
-                <div id="colorPreviewLight" class="color-preview-box"></div>
-              </div>
-              <div>
-                <p class="field-tip" style="margin-bottom:.4rem">🌙 ${t("settings_dark_preview")}</p>
-                <div id="colorPreviewDark" class="color-preview-box"></div>
-              </div>
+          <div class="color-preview-grid">
+            <div>
+              <p class="field-tip" style="margin-bottom:.4rem">☀️ ${t("settings_light_preview")}</p>
+              <div id="colorPreviewLight" class="color-preview-box"></div>
             </div>
+            <div>
+              <p class="field-tip" style="margin-bottom:.4rem">🌙 ${t("settings_dark_preview")}</p>
+              <div id="colorPreviewDark" class="color-preview-box"></div>
+            </div>
+          </div>
 
-            <div class="form-actions">
-              <button class="btn btn-ghost" id="reExtractBtn">🎨 ${t("settings_extract")}</button>
-              <button class="btn btn-primary" id="saveClubBtn">${t("form_save")}</button>
-            </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" id="reExtractBtn">🎨 ${t("settings_extract")}</button>
+            <button class="btn btn-primary" id="saveClubBtn">${t("form_save")}</button>
           </div>
           `
-              : ""
+              : `<p style="margin-top:1rem;color:var(--text-muted);font-size:.88rem">
+                  ${t("settings_readonly")}
+                </p>`
           }
+        </div>
 
-          <!-- Members section -->
-          <div class="card" id="sectionMembers">
-            <div class="card-title"><span class="dot"></span> ${t("settings_members")}</div>
-            <div class="table-wrap">
-              <table>
-                <thead>
+        <div class="card">
+          <div class="card-title"><span class="dot"></span> ${t("settings_members")}</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>${t("form_name")}</th>
+                  <th>${t("settings_email")}</th>
+                  <th>${t("players_status")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${members
+                  .map(
+                    (m) => `
                   <tr>
-                    <th>${t("form_name")}</th>
-                    <th>${t("settings_email")}</th>
-                    <th>${t("players_status")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${members
-                    .map(
-                      (m) => `
-                    <tr>
-                      <td><strong>${m.name}</strong></td>
-                      <td style="color:var(--text-muted);font-size:.85rem">${m.email}</td>
-                      <td>
-                        <span class="badge badge-${m.role === "admin" ? "primary" : "secondary"}">
-                          ${m.role === "admin" ? t("role_admin") : t("role_analyst")}
-                        </span>
-                      </td>
-                    </tr>`,
-                    )
-                    .join("")}
-                </tbody>
-              </table>
-            </div>
-
-            ${
-              isAdmin
-                ? `
-            <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
-              <div class="card-title"><span class="dot"></span> ➕ ${t("settings_add_analyst")}</div>
-              <div class="form-group">
-                <label>${t("form_name")}</label>
-                <input type="text" id="analystName" placeholder="Carlos Analyst" />
-              </div>
-              <div class="form-group">
-                <label>${t("settings_email")}</label>
-                <input type="email" id="analystEmail" placeholder="carlos@club.com" />
-              </div>
-              <div class="form-group">
-                <label>${t("login_password")}</label>
-                <input type="password" id="analystPassword" placeholder="••••••" />
-              </div>
-              <div class="form-actions">
-                <button class="btn btn-primary" id="addAnalystBtn">${t("settings_add_analyst")}</button>
-              </div>
-            </div>`
-                : ""
-            }
+                    <td><strong>${m.name}</strong></td>
+                    <td style="color:var(--text-muted);font-size:.85rem">${m.email}</td>
+                    <td>
+                      <span class="badge badge-${m.role === "admin" ? "primary" : "secondary"}">
+                        ${m.role === "admin" ? t("role_admin") : t("role_analyst")}
+                      </span>
+                    </td>
+                  </tr>`,
+                  )
+                  .join("")}
+              </tbody>
+            </table>
           </div>
 
+          ${
+            isAdmin
+              ? `
+          <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+            <div class="card-title"><span class="dot"></span> ${t("settings_add_analyst")}</div>
+            <div class="form-group">
+              <label>${t("form_name")}</label>
+              <input type="text" id="analystName" placeholder="Carlos Analyst" />
+            </div>
+            <div class="form-group">
+              <label>${t("settings_email")}</label>
+              <input type="email" id="analystEmail" placeholder="carlos@club.com" />
+            </div>
+            <div class="form-group">
+              <label>${t("login_password")}</label>
+              <input type="password" id="analystPassword" placeholder="••••••" />
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="addAnalystBtn">${t("settings_add_analyst")}</button>
+            </div>
+          </div>`
+              : ""
+          }
         </div>
       </div>`;
 
     renderLogoPreview();
     updateColorPreview();
+
+    if (typeof bindLangSwitcher === "function") bindLangSwitcher();
     if (isAdmin) wireSettings();
   } catch (e) {
     showAlert(e.message);
   }
-}
-
-function scrollToSection(id) {
-  document
-    .getElementById(id)
-    ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  document
-    .querySelectorAll(".settings-sidebar-btn")
-    .forEach((b) => b.classList.remove("active"));
-  event.currentTarget.classList.add("active");
 }
 
 function wireSettings() {
@@ -468,15 +425,6 @@ async function saveClub() {
     return;
   }
 
-  if (!isHex(primaryColor)) {
-    showAlert("Invalid primary color format. Use #RRGGBB.");
-    return;
-  }
-  if (!isHex(secondaryColor)) {
-    showAlert("Invalid secondary color format. Use #RRGGBB.");
-    return;
-  }
-
   try {
     const { data } = await request("PATCH", "/club", {
       name,
@@ -493,7 +441,6 @@ async function saveClub() {
     applyPrimaryColor(data.primaryColor, true);
     applySecondaryColor(data.secondaryColor, true);
     updateNavBrand(data.logoUrl, data.name);
-
     showAlert(t("settings_saved"), "success");
   } catch (e) {
     showAlert(e.message);

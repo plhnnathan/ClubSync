@@ -4,6 +4,7 @@ const translations = {
     nav_dashboard: "Dashboard",
     nav_players: "Players",
     nav_reports: "Match Reports",
+    nav_games: "Games",
     nav_settings: "Settings",
     nav_logout: "Logout",
     auth_language: "Language",
@@ -105,14 +106,13 @@ const translations = {
     settings_preview: "Preview",
     settings_dark_preview: "Dark mode preview",
     settings_light_preview: "Light mode preview",
-    nav_back_home: "Back to Home",
   },
-
   pt: {
     lang_name: "Português",
     nav_dashboard: "Painel",
     nav_players: "Jogadores",
     nav_reports: "Avaliações",
+    nav_games: "Jogos",
     nav_settings: "Configurações",
     nav_logout: "Sair",
     auth_language: "Idioma",
@@ -213,14 +213,13 @@ const translations = {
     settings_preview: "Prévia",
     settings_dark_preview: "Prévia modo escuro",
     settings_light_preview: "Prévia modo claro",
-    nav_back_home: "Voltar ao Início",
   },
-
   es: {
     lang_name: "Español",
     nav_dashboard: "Panel",
     nav_players: "Jugadores",
     nav_reports: "Informes",
+    nav_games: "Partidos",
     nav_settings: "Ajustes",
     nav_logout: "Salir",
     auth_language: "Idioma",
@@ -321,7 +320,6 @@ const translations = {
     settings_preview: "Vista previa",
     settings_dark_preview: "Vista previa modo oscuro",
     settings_light_preview: "Vista previa modo claro",
-    nav_back_home: "Volver al Inicio",
   },
 };
 
@@ -349,7 +347,6 @@ function setLang(lang) {
   if (!translations[lang]) return;
   currentLang = lang;
   localStorage.setItem("lang", lang);
-  updateLangBtn();
   applyI18n();
 
   const active = document.querySelector(".nav-btn.active");
@@ -364,8 +361,8 @@ function setLang(lang) {
 function langSwitcherHTML() {
   return `<div class="segmented" id="langSwitcher">
     ${LANGS.map(
-      (l) => `
-      <button type="button" data-lang="${l.code}" class="${l.code === currentLang ? "active" : ""}">
+      (l) => `<button type="button" data-lang="${l.code}"
+        class="${l.code === currentLang ? "active" : ""}">
         <span>${l.flag}</span><span>${l.label}</span>
       </button>`,
     ).join("")}
@@ -382,15 +379,12 @@ function cycleLang() {
   const idx = LANGS.findIndex((l) => l.code === currentLang);
   const next = LANGS[(idx + 1) % LANGS.length];
   setLang(next.code);
+  updateLangBtn();
 }
 
 function updateLangBtn() {
   const btn = document.getElementById("langBtn");
   if (!btn) return;
   const l = LANGS.find((x) => x.code === currentLang) || LANGS[0];
-  btn.innerHTML = `${l.flag} ${l.label}`;
-}
-
-function toggleLang() {
-  cycleLang();
+  btn.textContent = `${l.flag} ${l.label}`;
 }
