@@ -18,10 +18,51 @@ const footMap = {
 };
 
 const statusMap = {
-  Active: { class: "badge-green", key: "status_active" },
-  Injured: { class: "badge-red", key: "status_injured" },
-  "On Loan": { class: "badge-yellow", key: "status_loan" },
+  Active: "status_active",
+  Injured: "status_injured",
+  "On Loan": "status_loan",
 };
+
+function getSafeTranslation(map, rawValue) {
+  if (!rawValue) return "-";
+  let engValue = rawValue;
+  if (Object.values(map).includes(rawValue)) {
+    engValue = Object.keys(map).find((k) => map[k] === rawValue);
+  }
+  if (!map[engValue]) return rawValue;
+
+  const i18nKey = map[engValue];
+  let translated = typeof t === "function" ? t(i18nKey) : i18nKey;
+
+  if (translated === i18nKey) {
+    const manual = {
+      pos_goalkeeper: "Goleiro",
+      pos_rb: "Lateral Direito",
+      pos_lb: "Lateral Esquerdo",
+      pos_cb: "Zagueiro",
+      pos_dm: "Volante",
+      pos_cm: "Meio-Campo",
+      pos_am: "Meia Atacante",
+      pos_rw: "Ponta Direita",
+      pos_lw: "Ponta Esquerda",
+      pos_st: "Atacante",
+      foot_right: "Destro",
+      foot_left: "Canhoto",
+      foot_both: "Ambidestro",
+      status_active: "Ativo",
+      status_injured: "Lesionado",
+      status_loan: "Emprestado",
+    };
+    translated = manual[i18nKey] || engValue;
+  }
+  return translated;
+}
+
+function getSafeEngValue(map, rawValue) {
+  if (Object.values(map).includes(rawValue))
+    return Object.keys(map).find((k) => map[k] === rawValue);
+  return rawValue;
+}
 
 async function renderPlayers() {
   document.getElementById("app").innerHTML =
@@ -101,7 +142,7 @@ function buildPlayersTable(players, compact = false) {
                 </div>
               </div>
             </td>
-            <td>${t(positionMap[p.position]) || p.position}</td>
+            <td>${getSafeTranslation(positionMap, p.position)}</td>
             ${!compact ? `<td><span style="font-size:0.8rem">${p.nationality || "-"}<br>${p.birthDate || "-"}</span></td>` : ""}
             <td>${statusBadge(p.status)}</td>
             ${
@@ -130,8 +171,12 @@ function buildPlayersTable(players, compact = false) {
 }
 
 function statusBadge(status) {
-  const badgeInfo = statusMap[status] || { class: "badge-gray", key: status };
-  return `<span class="badge ${badgeInfo.class}">${t(badgeInfo.key) || status}</span>`;
+  const engStatus = getSafeEngValue(statusMap, status) || status;
+  let badgeClass = "badge-gray";
+  if (engStatus === "Active") badgeClass = "badge-green";
+  if (engStatus === "Injured") badgeClass = "badge-red";
+  if (engStatus === "On Loan") badgeClass = "badge-yellow";
+  return `<span class="badge ${badgeClass}">${getSafeTranslation(statusMap, status)}</span>`;
 }
 
 document.addEventListener("click", async (e) => {
@@ -157,6 +202,10 @@ async function openPlayerModal(id = null) {
   const positions = Object.keys(positionMap);
   const feet = Object.keys(footMap);
   const statuses = Object.keys(statusMap);
+
+  const safePos = getSafeEngValue(positionMap, player.position);
+  const safeFoot = getSafeEngValue(footMap, player.dominantFoot);
+  const safeStatus = getSafeEngValue(statusMap, player.status);
 
   document.getElementById("playerModalBody").innerHTML = `
     <div class="form-row">
@@ -186,20 +235,20 @@ async function openPlayerModal(id = null) {
     <div class="form-group">
       <label>${t("form_position")}</label>
       <select id="pPosition">
-        ${positions.map((p) => `<option value="${p}" ${player.position === p ? "selected" : ""}>${t(positionMap[p])}</option>`).join("")}
+        ${positions.map((p) => `<option value="${p}" ${safePos === p ? "selected" : ""}>${getSafeTranslation(positionMap, p)}</option>`).join("")}
       </select>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>${t("form_foot")}</label>
         <select id="pFoot">
-          ${feet.map((f) => `<option value="${f}" ${player.dominantFoot === f ? "selected" : ""}>${t(footMap[f])}</option>`).join("")}
+          ${feet.map((f) => `<option value="${f}" ${safeFoot === f ? "selected" : ""}>${getSafeTranslation(footMap, f)}</option>`).join("")}
         </select>
       </div>
       <div class="form-group">
         <label>${t("form_status")}</label>
         <select id="pStatus">
-          ${statuses.map((s) => `<option value="${s}" ${player.status === s ? "selected" : ""}>${t(statusMap[s].key)}</option>`).join("")}
+          ${statuses.map((s) => `<option value="${s}" ${safeStatus === s ? "selected" : ""}>${getSafeTranslation(statusMap, s)}</option>`).join("")}
         </select>
       </div>
     </div>
@@ -259,7 +308,7 @@ async function viewPlayerStats(id) {
     const { player, stats } = res.data;
     const avg = stats.averageRating || 0;
     const pct = (avg / 10) * 100;
-    const displayPos = t(positionMap[player.position]) || player.position;
+    const displayPos = getSafeTranslation(positionMap, player.position);
 
     const avatar = player.photoUrl
       ? `<img src="${player.photoUrl}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);margin:0 auto 1rem">`

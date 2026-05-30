@@ -106,6 +106,22 @@ const translations = {
     settings_preview: "Preview",
     settings_dark_preview: "Dark mode preview",
     settings_light_preview: "Light mode preview",
+    pos_goalkeeper: "Goalkeeper",
+    pos_rb: "Right Back",
+    pos_lb: "Left Back",
+    pos_cb: "Center Back",
+    pos_dm: "Defensive Midfielder",
+    pos_cm: "Midfielder",
+    pos_am: "Attacking Midfielder",
+    pos_rw: "Right Winger",
+    pos_lw: "Left Winger",
+    pos_st: "Striker",
+    foot_right: "Right",
+    foot_left: "Left",
+    foot_both: "Both",
+    status_active: "Active",
+    status_injured: "Injured",
+    status_loan: "On Loan",
   },
   pt: {
     lang_name: "Português",
@@ -213,6 +229,22 @@ const translations = {
     settings_preview: "Prévia",
     settings_dark_preview: "Prévia modo escuro",
     settings_light_preview: "Prévia modo claro",
+    pos_goalkeeper: "Goleiro",
+    pos_rb: "Lateral Direito",
+    pos_lb: "Lateral Esquerdo",
+    pos_cb: "Zagueiro",
+    pos_dm: "Volante",
+    pos_cm: "Meio-Campo",
+    pos_am: "Meia Atacante",
+    pos_rw: "Ponta Direita",
+    pos_lw: "Ponta Esquerda",
+    pos_st: "Atacante",
+    foot_right: "Destro",
+    foot_left: "Canhoto",
+    foot_both: "Ambidestro",
+    status_active: "Ativo",
+    status_injured: "Lesionado",
+    status_loan: "Emprestado",
   },
   es: {
     lang_name: "Español",
@@ -320,6 +352,22 @@ const translations = {
     settings_preview: "Vista previa",
     settings_dark_preview: "Vista previa modo oscuro",
     settings_light_preview: "Vista previa modo claro",
+    pos_goalkeeper: "Portero",
+    pos_rb: "Lateral Derecho",
+    pos_lb: "Lateral Izquierdo",
+    pos_cb: "Defensa Central",
+    pos_dm: "Pivote",
+    pos_cm: "Mediocentro",
+    pos_am: "Mediapunta",
+    pos_rw: "Extremo Derecho",
+    pos_lw: "Extremo Izquierdo",
+    pos_st: "Delantero",
+    foot_right: "Diestro",
+    foot_left: "Zurdo",
+    foot_both: "Ambidiestro",
+    status_active: "Activo",
+    status_injured: "Lesionado",
+    status_loan: "Cedido",
   },
 };
 
@@ -351,10 +399,11 @@ function setLang(lang) {
 
   const active = document.querySelector(".nav-btn.active");
   if (authToken && active) {
-    navigate(active.dataset.nav);
+    if (typeof navigate === "function") navigate(active.dataset.nav);
   } else if (!authToken) {
     const onRegister = !!document.getElementById("regClub");
-    onRegister ? renderRegister() : renderLogin();
+    if (onRegister && typeof renderRegister === "function") renderRegister();
+    else if (typeof renderLogin === "function") renderLogin();
   }
 }
 
