@@ -290,7 +290,7 @@ This project demonstrates:
 
 ## 👨‍💻 Author
 
-**Nathan Chaia** | [LinkedIn](www.linkedin.com/in/plhnathan)
+**Nathan Chaia** | [LinkedIn](https://www.linkedin.com/in/plhnathan/)
 
 Web Application Architecture – Academic Project
 
