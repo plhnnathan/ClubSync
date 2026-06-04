@@ -2,17 +2,17 @@
 
 <div align="center">
 
-### Football Club Management Platform
+### Football Club Management and Performance Analysis Platform
 
-A multi-tenant SaaS platform developed for the **Web Application Architecture** course.
+Academic project developed for the **Web Application Architecture** course.
 
-Manage players, analyze match performance, generate reports, and control club operations through a secure RESTful API powered by MongoDB.
+ClubSync helps football clubs manage players, games, match reports, and user access through a RESTful API integrated with MongoDB.
 
 ![Node.js](https://img.shields.io/badge/Node.js-20+-green)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-green)
 ![JWT](https://img.shields.io/badge/JWT-Authentication-orange)
-![Swagger](https://img.shields.io/badge/OpenAPI-Swagger-brightgreen)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-brightgreen)
 ![Jest](https://img.shields.io/badge/Jest-Testing-red)
 
 </div>
@@ -21,55 +21,57 @@ Manage players, analyze match performance, generate reports, and control club op
 
 ## 📖 Overview
 
-ClubSync is a web application designed to help football clubs manage their squads, track player performance, and analyze match data.
+ClubSync is a web application designed to support football clubs in managing player information, match records, performance reports, and user permissions.
 
-The project was developed to demonstrate modern backend development practices and software architecture concepts, including:
+The project was built to demonstrate key concepts of modern web application development, including:
 
-- 🌐 RESTful API Design
-- 🍃 MongoDB Integration
-- 🔐 JWT Authentication
-- 🛡️ Role-Based Access Control (RBAC)
-- 📚 OpenAPI / Swagger Documentation
-- 🧪 Unit Testing
-- 🏗️ SOLID Principles
-- ⚡ Asynchronous Frontend Communication
+- RESTful API Design
+- MongoDB Integration
+- JWT Authentication
+- Role-Based Access Control (RBAC)
+- OpenAPI / Swagger Documentation
+- Unit Testing
+- SOLID Principles
+- Asynchronous Frontend Communication
 
 ---
 
-## ✨ Features
+## ✨ Main Features
 
 ### 👥 Player Management
 
-- Create new players
+- Create players
 - Update player information
-- View player profiles
 - Delete players
-- Search and filter player records
+- View player profiles
+- Access player statistics
+
+### ⚽ Game Management
+
+- Register games
+- Update game information
+- Remove games
+- Retrieve game records
 
 ### 📊 Match Reports
 
-- Register match reports
-- Record player performance statistics
-- Track match results
-- Analyze historical performance
+- Create performance reports
+- Associate reports with players
+- Retrieve player report history
+- Update report information
 
 ### 🏟️ Club Management
 
-- Manage club information
-- View club members
+- View club information
+- Manage club members
 - Update club settings
 
-### 👤 User Management
+### 🔐 Authentication & Authorization
 
 - User registration
-- Secure login
-- User roles and permissions
-
-### 🔐 Security
-
+- User login
 - JWT Authentication
-- Protected routes
-- Role-Based Authorization (RBAC)
+- Role-Based Access Control
 
 ---
 
@@ -84,9 +86,9 @@ The project was developed to demonstrate modern backend development practices an
 ### Database
 
 - MongoDB
-- Mongoose
+- Mongoose ODM
 
-### Authentication
+### Security
 
 - JSON Web Tokens (JWT)
 
@@ -102,7 +104,7 @@ The project was developed to demonstrate modern backend development practices an
 
 - HTML
 - CSS
-- JavaScript (Fetch API)
+- JavaScript
 
 ---
 
@@ -110,43 +112,37 @@ The project was developed to demonstrate modern backend development practices an
 
 ```text
 src/
+├── config/
 ├── controllers/
-├── services/
+├── middlewares/
 ├── models/
 ├── routes/
-├── middlewares/
-├── config/
-├── tests/
-└── app.ts
+├── services/
+├── __tests__/
+└── server.ts
 
 public/
 ├── css/
 ├── js/
-└── pages/
+└── index.html
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Installation
 
 ### 📋 Prerequisites
 
-Before running the project, make sure you have installed:
-
 - Node.js 20+
 - npm
-- MongoDB Atlas account or local MongoDB instance
+- MongoDB Atlas or local MongoDB instance
 
----
-
-### 📥 Clone the Repository
+### 📥 Clone Repository
 
 ```bash
 git clone https://github.com/plhnnathan/ClubSync.git
 cd ClubSync
 ```
-
----
 
 ### 📦 Install Dependencies
 
@@ -158,7 +154,7 @@ npm install
 
 ## ⚙️ Environment Variables
 
-Create a `.env` file in the project root directory.
+Create a `.env` file in the project root:
 
 ```env
 PORT=3000
@@ -174,13 +170,13 @@ JWT_EXPIRES_IN=1d
 
 ## ▶️ Running the Application
 
-### Development Mode
+Development mode:
 
 ```bash
 npm run dev
 ```
 
-### Production Mode
+Production mode:
 
 ```bash
 npm run build
@@ -191,23 +187,17 @@ npm start
 
 ## 🧪 Running Tests
 
-Execute all unit tests:
-
 ```bash
 npm test
 ```
 
-The project includes tests for:
-
-- Authentication Services
-- Player Services
-- Match Report Services
+The project includes automated tests for service-layer business logic.
 
 ---
 
 ## 📚 API Documentation
 
-After starting the application, Swagger documentation is available at:
+Swagger documentation is available after starting the application:
 
 ```text
 http://localhost:3000/api-docs
@@ -215,91 +205,93 @@ http://localhost:3000/api-docs
 
 Swagger provides:
 
-- Endpoint descriptions
+- Endpoint documentation
 - Request schemas
 - Response examples
 - Authentication requirements
-- Interactive API testing
+- Interactive testing interface
 
 ---
 
-## 🔐 Authentication
+## 🔗 API Endpoints
 
-Login endpoint:
+### Authentication
 
-```http
-POST /api/auth/login
-```
+| Method | Endpoint           |
+| ------ | ------------------ |
+| POST   | /api/auth/register |
+| POST   | /api/auth/login    |
+| POST   | /api/auth/analysts |
 
-Successful authentication returns:
+### Players
 
-```json
-{
-  "token": "jwt_token_here"
-}
-```
+| Method | Endpoint               |
+| ------ | ---------------------- |
+| GET    | /api/players           |
+| GET    | /api/players/:id       |
+| GET    | /api/players/:id/stats |
+| POST   | /api/players           |
+| PATCH  | /api/players/:id       |
+| DELETE | /api/players/:id       |
 
-Protected routes require:
+### Games
 
-```http
-Authorization: Bearer <token>
-```
+| Method | Endpoint       |
+| ------ | -------------- |
+| GET    | /api/games     |
+| GET    | /api/games/:id |
+| POST   | /api/games     |
+| PATCH  | /api/games/:id |
+| DELETE | /api/games/:id |
+
+### Match Reports
+
+| Method | Endpoint                            |
+| ------ | ----------------------------------- |
+| GET    | /api/match-reports                  |
+| GET    | /api/match-reports/:id              |
+| GET    | /api/match-reports/player/:playerId |
+| POST   | /api/match-reports                  |
+| PATCH  | /api/match-reports/:id              |
+| DELETE | /api/match-reports/:id              |
+
+### Club
+
+| Method | Endpoint          |
+| ------ | ----------------- |
+| GET    | /api/club         |
+| GET    | /api/club/members |
+| PATCH  | /api/club         |
 
 ---
 
-## 🛡️ Role-Based Access Control
+## 🛡️ Security Features
 
-ClubSync implements RBAC with multiple user roles.
-
-| Role       | Permissions                              |
-| ---------- | ---------------------------------------- |
-| 👑 Admin   | Full access to all resources             |
-| 📈 Analyst | Analytical and limited access operations |
-
-Authorization is validated through JWT claims and middleware protection.
+- JWT Authentication
+- Protected Routes
+- Role-Based Authorization
+- Password Hashing
+- Middleware-Based Access Control
 
 ---
 
-## 🏗️ Software Engineering Practices
+## 🎓 Academic Objectives
 
-This project applies several industry-standard practices:
+This project demonstrates:
 
-- ✅ RESTful Architecture
-- ✅ Layered Architecture
-- ✅ SOLID Principles
-- ✅ Dependency Injection Concepts
-- ✅ OpenAPI Documentation
-- ✅ Automated Testing
-- ✅ Secure Authentication
-- ✅ Role-Based Authorization
-
----
-
-## 🎯 Academic Objectives
-
-This project was developed as part of the **Web Application Architecture** course and demonstrates:
-
-- API Design
-- NoSQL Database Integration
-- Authentication & Authorization
-- Documentation Standards
-- Testing Practices
-- Software Architecture Principles
+- REST API Development
+- NoSQL Database Usage
+- Authentication and Authorization
+- API Documentation
+- Unit Testing
+- Software Architecture Best Practices
 
 ---
 
 ## 👨‍💻 Author
 
-### Nathan Chaia
+**Nathan Chaia** | [LinkedIn](www.linkedin.com/in/plhnathan)
 
-Academic Project — Web Application Architecture
+Web Application Architecture – Academic Project
 
 2026
-
----
-
-<div align="center">
-
-⭐ If you found this project interesting, feel free to explore the codebase and documentation.
-
-</div>

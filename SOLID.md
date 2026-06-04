@@ -1,166 +1,206 @@
 # 🏗️ SOLID Principles Applied in ClubSync
 
-This document explains how the SOLID principles were applied throughout the backend architecture of the ClubSync project.
+This document describes how SOLID principles were applied in the ClubSync backend architecture.
 
 ---
 
-# 🔹 S — Single Responsibility Principle (SRP)
+# S — Single Responsibility Principle (SRP)
 
 > A class should have only one reason to change.
 
-ClubSync separates responsibilities into dedicated layers and services.
+ClubSync separates responsibilities into dedicated services, controllers, and middleware components.
 
-## Examples
+## AuthService
 
-### 🔐 AuthService
-
-Responsible only for:
+**Responsibility:**
 
 - User authentication
 - Password validation
-- JWT generation
+- JWT token generation
 
-It does not handle routing, database configuration, or authorization.
-
----
-
-### 👥 PlayerService
-
-Responsible only for:
-
-- Player business rules
-- Data validation
-- Player-related operations
-
-It does not manage HTTP requests or presentation concerns.
+This service does not handle HTTP requests or database configuration.
 
 ---
 
-### 📊 MatchReportService
+## PlayerService
 
-Responsible only for:
+**Responsibility:**
 
-- Match report processing
-- Business validation
-- Performance calculations
+- Player-related business rules
+- Player validation
+- Statistics calculations
+
+This service does not deal with routing or request/response handling.
 
 ---
 
-# 🔹 O — Open/Closed Principle (OCP)
+## MatchReportService
+
+**Responsibility:**
+
+- Match report management
+- Performance analysis
+- Report validation
+
+The class focuses exclusively on report-related operations.
+
+---
+
+## Benefit
+
+Separating responsibilities improves:
+
+- Maintainability
+- Readability
+- Testability
+
+---
+
+# O — Open/Closed Principle (OCP)
 
 > Software entities should be open for extension but closed for modification.
 
-The application architecture allows new features to be added without modifying existing business logic.
+ClubSync follows a layered architecture where new features can be added without changing existing modules.
 
 ## Example
 
-A new entity such as:
+The application currently contains independent modules for:
 
-- TrainingSession
-- Tournament
-- ScoutReport
+- Players
+- Games
+- Match Reports
+- Club Management
 
-can be added by creating:
+Adding a new feature such as:
+
+- Training Sessions
+- Tournaments
+- Scout Reports
+
+would only require creating:
 
 - Model
 - Service
 - Controller
-- Route
+- Routes
 
-without changing existing modules.
+without modifying existing business logic.
 
-### Benefits
+## Benefit
 
-- Easier maintenance
-- Reduced regression risk
-- Better scalability
+The system can evolve while minimizing the risk of breaking existing functionality.
 
 ---
 
-# 🔹 L — Liskov Substitution Principle (LSP)
+# I — Interface Segregation Principle (ISP)
 
-> Derived types must be substitutable for their base types.
+> Clients should not be forced to depend on functionality they do not use.
 
-The project uses TypeScript interfaces and abstractions to ensure interchangeable implementations.
+ClubSync separates concerns into specialized layers.
 
-## Examples
+## Controllers
 
-- Service contracts
-- Repository abstractions
-- Middleware interfaces
+Responsible only for:
 
-This guarantees predictable behavior when implementations are replaced or extended.
+- Receiving HTTP requests
+- Returning HTTP responses
 
----
+Examples:
 
-# 🔹 I — Interface Segregation Principle (ISP)
-
-> Clients should not be forced to depend on interfaces they do not use.
-
-Responsibilities are divided into specialized modules.
-
-## Examples
-
-### Authentication Middleware
-
-Handles only authentication concerns.
-
-### Authorization Middleware
-
-Handles only role validation.
-
-### Services
-
-Contain only business logic.
-
-### Controllers
-
-Handle only HTTP communication.
-
-This separation reduces unnecessary dependencies and improves maintainability.
+- AuthController
+- PlayerController
+- MatchReportController
 
 ---
 
-# 🔹 D — Dependency Inversion Principle (DIP)
+## Services
 
-> High-level modules should not depend on low-level modules.
+Responsible only for:
 
-Controllers interact with services instead of directly accessing database operations.
+- Business logic
+- Validation rules
+- Domain operations
 
-## Architecture
+Examples:
+
+- AuthService
+- PlayerService
+- GameService
+- MatchReportService
+
+---
+
+## Middleware
+
+Responsible only for:
+
+- Authentication
+- Authorization
+
+Examples:
+
+- authenticate.ts
+- authorize.ts
+
+## Benefit
+
+Each component depends only on the functionality required for its purpose.
+
+---
+
+# D — Dependency Inversion Principle (DIP)
+
+> High-level modules should not depend directly on low-level modules.
+
+ClubSync separates the application into layers.
 
 ```text
-Controller
+Routes
     ↓
-Service
+Controllers
     ↓
-Model / Repository
+Services
+    ↓
+Models (Mongoose)
 ```
 
-### Benefits
+Controllers do not contain business logic.
 
-- Easier unit testing
-- Better separation of concerns
-- Reduced coupling
-- Improved maintainability
+Services act as an intermediary between the API layer and the persistence layer.
+
+## Example
+
+PlayerController delegates player operations to PlayerService instead of directly manipulating MongoDB models.
+
+The same approach is used by:
+
+- AuthController → AuthService
+- GameController → GameService
+- MatchReportController → MatchReportService
+
+## Benefit
+
+This architecture:
+
+- Reduces coupling
+- Improves maintainability
+- Simplifies testing
 
 ---
 
-# 📈 Results Achieved
+# SOLID Principles Implemented
 
-By applying SOLID principles, ClubSync benefits from:
-
-- ✅ High cohesion
-- ✅ Low coupling
-- ✅ Easier testing
-- ✅ Better maintainability
-- ✅ Improved scalability
-- ✅ Cleaner architecture
+| Principle                             | Applied |
+| ------------------------------------- | ------- |
+| Single Responsibility Principle (SRP) | ✅      |
+| Open/Closed Principle (OCP)           | ✅      |
+| Interface Segregation Principle (ISP) | ✅      |
+| Dependency Inversion Principle (DIP)  | ✅      |
 
 ---
 
-# 🎯 Conclusion
+# Conclusion
 
-The ClubSync architecture follows modern backend development practices by applying SOLID principles across its layers.
+ClubSync applies multiple SOLID principles through a layered architecture composed of controllers, services, middleware, and models.
 
-These principles help ensure that the application remains maintainable, scalable, and easier to extend as new features are introduced.
+These practices improve maintainability, scalability, readability, and testability while keeping responsibilities clearly separated across the application.

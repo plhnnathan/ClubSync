@@ -46,12 +46,48 @@ async function renderGames() {
         </thead>
         <tbody>
           ${data
-            .map(
-              (g) => `
+            .map((g) => {
+              const normalize = (str) =>
+                str
+                  ? str
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .toLowerCase()
+                      .trim()
+                  : "";
+              const myTeamNorm = normalize(
+                localStorage.getItem("clubName") || "Atlético Mineiro",
+              );
+
+              const isHomeMyTeam = normalize(g.homeTeam) === myTeamNorm;
+              const isAwayMyTeam = normalize(g.awayTeam) === myTeamNorm;
+
+              const homeDisplay = isHomeMyTeam
+                ? `<strong>${g.homeTeam}</strong>`
+                : g.homeTeam;
+              const awayDisplay = isAwayMyTeam
+                ? `<strong>${g.awayTeam}</strong>`
+                : g.awayTeam;
+
+              let badgeClass = "badge-primary";
+              let badgeStyle = "";
+
+              if (g.homeScore !== null && g.awayScore !== null) {
+                if (
+                  (isHomeMyTeam && g.homeScore < g.awayScore) ||
+                  (isAwayMyTeam && g.awayScore < g.homeScore)
+                ) {
+                  badgeClass = "badge-danger";
+                  badgeStyle =
+                    "background-color: #ef4444 !important; color: #fff !important; border: none !important;";
+                }
+              }
+
+              return `
             <tr>
               <td>${g.date ? g.date.split("T")[0].split("-").reverse().join("/") : "-"}</td>
-              <td><strong>${g.homeTeam}</strong> x ${g.awayTeam}</td>
-              <td><span class="badge badge-primary">${g.homeScore ?? "-"} - ${g.awayScore ?? "-"}</span></td>
+              <td>${homeDisplay} x ${awayDisplay}</td>
+              <td><span class="badge ${badgeClass}" style="${badgeStyle}">${g.homeScore ?? "-"} - ${g.awayScore ?? "-"}</span></td>
               <td>
                 <div class="td-actions">
                   <button class="btn btn-info btn-sm js-view-game" data-id="${g._id}">Estatísticas</button>
@@ -66,8 +102,8 @@ async function renderGames() {
                 </div>
               </td>
             </tr>
-          `,
-            )
+          `;
+            })
             .join("")}
         </tbody>
       </table>`;
