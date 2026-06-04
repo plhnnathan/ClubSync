@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import playerRoutes from "./routes/player.routes";
 import matchReportRoutes from "./routes/matchReport.routes";
 import clubRoutes from "./routes/club.routes";
+import gameRoutes from "./routes/game.routes";
 import setupSwagger from "./config/swagger";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/players", playerRoutes);
 app.use("/api/match-reports", matchReportRoutes);
 app.use("/api/club", clubRoutes);
+app.use("/api/games", gameRoutes);
 
 setupSwagger(app);
 

@@ -1,149 +1,170 @@
 async function renderReports() {
   document.getElementById("app").innerHTML =
     `<div class="loading">${t("loading")}</div>`;
-  let data = [];
-  const isAdmin = currentUser && currentUser.role === "admin";
-
   try {
-    const res = await request("GET", "/reports");
-    if (res && res.data) data = res.data;
-  } catch (e) {
-    console.warn(e);
-  }
+    const { data } = await request("GET", "/match-reports");
+    const isAdmin = currentUser.role === "admin";
 
-  let content = "";
-  if (data.length === 0) {
-    content = `
-      <div class="empty-state">
-        <span class="empty-emoji">📋</span>
-        <p>${t("no_data")}</p>
-        ${isAdmin ? `<button class="btn btn-primary" onclick="seedGaloReports()" style="margin-top: 1rem;">🐔 Carregar Avaliações</button>` : ""}
-      </div>`;
-  } else {
-    content = `
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Jogador</th>
-            <th>Adversário</th>
-            <th>Nota</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data
-            .map(
-              (r) => `
-            <tr>
-              <td>${r.date}</td>
-              <td><strong>${r.playerName}</strong></td>
-              <td>${r.opponent}</td>
-              <td><span class="badge ${r.rating >= 7 ? "badge-primary" : "badge-yellow"}">${r.rating}</span></td>
-              <td>
-                <div class="td-actions">
-                  ${
-                    isAdmin
-                      ? `
-                  <button class="btn btn-primary btn-sm js-edit-report" data-id="${r._id}">Editar</button>
-                  <button class="btn btn-danger btn-sm js-delete-report" data-id="${r._id}">Excluir</button>
-                  `
-                      : ""
-                  }
-                </div>
-              </td>
-            </tr>
-          `,
-            )
-            .join("")}
-        </tbody>
-      </table>`;
-  }
-
-  document.getElementById("app").innerHTML = `
-    <div class="page-header">
-      <div>
-        <h2 class="page-title"><span class="emoji">📋</span> ${t("nav_reports")}</h2>
-        <p class="page-subtitle">${data.length} avaliações registradas</p>
+    document.getElementById("app").innerHTML = `
+      <div class="page-header">
+        <div>
+          <h2 class="page-title"><span class="emoji">📋</span> ${t("reports_title")}</h2>
+          <p class="page-subtitle">${data.length} ${t("dashboard_reports").toLowerCase()}</p>
+        </div>
+        <button class="btn btn-primary" id="addReportBtn">+ ${t("reports_add")}</button>
       </div>
-      ${isAdmin ? `<button class="btn btn-primary" id="addReportBtn">+ Nova Avaliação</button>` : ""}
-    </div>
-    <div class="card"><div class="table-wrap">${content}</div></div>`;
+      <div class="card">
+        <div class="table-wrap">${buildReportsTable(data, isAdmin)}</div>
+      </div>`;
 
-  if (isAdmin) {
-    const addBtn = document.getElementById("addReportBtn");
-    if (addBtn) addBtn.addEventListener("click", () => openReportModal());
+    document
+      .getElementById("addReportBtn")
+      .addEventListener("click", () => openReportModal());
+  } catch (e) {
+    showAlert(e.message);
   }
 }
 
-document.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("js-edit-report"))
-    openReportModal(e.target.dataset.id);
-  if (e.target.classList.contains("js-delete-report"))
+function buildReportsTable(data, isAdmin) {
+  if (!data.length)
+    return `<div class="empty-state"><span class="empty-emoji">📋</span><p>${t("no_data")}</p></div>`;
+
+  return `
+    <table>
+      <thead>
+        <tr>
+          <th>${t("reports_player")}</th>
+          <th>${t("reports_opponent")}</th>
+          <th>${t("reports_date")}</th>
+          <th>${t("reports_min")}</th>
+          <th>${t("reports_goals")}</th>
+          <th>${t("reports_assists")}</th>
+          <th>${t("reports_rating")}</th>
+          ${isAdmin ? `<th>${t("reports_actions")}</th>` : ""}
+        </tr>
+      </thead>
+      <tbody>
+        ${data
+          .map((r) => {
+            const ratingClass =
+              r.sofascoreRating >= 7
+                ? "badge-green"
+                : r.sofascoreRating >= 5
+                  ? "badge-yellow"
+                  : "badge-red";
+            return `
+            <tr>
+              <td><strong>${r.playerId?.name || "—"}</strong></td>
+              <td>${r.opponent}</td>
+              <td>${new Date(r.matchDate).toLocaleDateString()}</td>
+              <td>${r.minutesPlayed}'</td>
+              <td>${r.goals}</td>
+              <td>${r.assists}</td>
+              <td><span class="badge ${ratingClass}">${r.sofascoreRating}</span></td>
+              ${
+                isAdmin
+                  ? `
+              <td>
+                <div class="td-actions">
+                  <button class="btn btn-danger btn-sm js-del-report" data-id="${r._id}">${t("btn_delete")}</button>
+                </div>
+              </td>`
+                  : ""
+              }
+            </tr>`;
+          })
+          .join("")}
+      </tbody>
+    </table>`;
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("js-del-report"))
     deleteReport(e.target.dataset.id);
 });
 
-async function openReportModal(id = null) {
-  document.getElementById("reportModalTitle").textContent = id
-    ? "Editar Avaliação"
-    : "Nova Avaliação";
-  let r = {};
-  let players = [];
-
+async function openReportModal() {
   try {
-    if (id) r = (await request("GET", `/reports/${id}`)).data;
-  } catch (e) {}
+    const { data: players } = await request("GET", "/players");
 
-  try {
-    const pRes = await request("GET", "/players");
-    if (pRes && pRes.data) players = pRes.data;
-  } catch (e) {}
+    document.getElementById("reportModalTitle").textContent =
+      t("modal_add_report");
+    document.getElementById("reportModalBody").innerHTML = `
+      <div class="form-group">
+        <label>${t("form_player")}</label>
+        <select id="rPlayer">
+          ${players.map((p) => `<option value="${p._id}">${p.name} · #${p.jerseyNumber}</option>`).join("")}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>${t("form_opponent")}</label>
+        <input type="text" id="rOpponent" placeholder="FC Rival" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>${t("form_date")}</label>
+          <input type="date" id="rDate" />
+        </div>
+        <div class="form-group">
+          <label>${t("form_minutes")}</label>
+          <input type="number" id="rMinutes" value="90" min="0" max="120" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>${t("form_goals")}</label>
+          <input type="number" id="rGoals" value="0" min="0" />
+        </div>
+        <div class="form-group">
+          <label>${t("form_assists")}</label>
+          <input type="number" id="rAssists" value="0" min="0" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>${t("form_rating")}</label>
+        <input type="number" id="rRating" value="7.0" min="0" max="10" step="0.1" />
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="saveReportBtn">${t("form_save")}</button>
+        <button class="btn btn-ghost" onclick="closeModal('reportModal')">${t("form_cancel")}</button>
+      </div>`;
 
-  document.getElementById("reportModalBody").innerHTML = `
-    <div class="form-group">
-      <label>Jogador</label>
-      <select id="rPlayer">
-        ${players.map((p) => `<option value="${p.name}" ${r.playerName === p.name ? "selected" : ""}>${p.name}</option>`).join("")}
-      </select>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Adversário</label><input type="text" id="rOpponent" value="${r.opponent || ""}"></div>
-      <div class="form-group"><label>Data</label><input type="date" id="rDate" value="${r.date || ""}"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Minutos</label><input type="number" id="rMins" value="${r.minutes || 90}"></div>
-      <div class="form-group"><label>Nota (0-10)</label><input type="number" id="rRating" step="0.1" value="${r.rating || 7.0}"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Gols</label><input type="number" id="rGoals" value="${r.goals || 0}"></div>
-      <div class="form-group"><label>Assistências</label><input type="number" id="rAssists" value="${r.assists || 0}"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-primary" id="saveReportBtn">Salvar</button>
-      <button class="btn btn-ghost" onclick="closeModal('reportModal')">Cancelar</button>
-    </div>`;
-
-  document
-    .getElementById("saveReportBtn")
-    .addEventListener("click", () => saveReport(id));
-  openModal("reportModal");
+    document
+      .getElementById("saveReportBtn")
+      .addEventListener("click", saveReport);
+    openModal("reportModal");
+  } catch (e) {
+    showAlert(e.message);
+  }
 }
 
-async function saveReport(id) {
-  const body = {
-    playerName: document.getElementById("rPlayer").value,
-    opponent: document.getElementById("rOpponent").value.trim(),
-    date: document.getElementById("rDate").value,
-    minutes: Number(document.getElementById("rMins").value),
-    rating: Number(document.getElementById("rRating").value),
-    goals: Number(document.getElementById("rGoals").value),
-    assists: Number(document.getElementById("rAssists").value),
-  };
+async function saveReport() {
+  const playerId = document.getElementById("rPlayer").value;
+  const opponent = document.getElementById("rOpponent").value.trim();
+  const matchDate = document.getElementById("rDate").value;
+  const minutesPlayed = parseInt(document.getElementById("rMinutes").value);
+  const goals = parseInt(document.getElementById("rGoals").value);
+  const assists = parseInt(document.getElementById("rAssists").value);
+  const sofascoreRating = parseFloat(document.getElementById("rRating").value);
+
+  if (!opponent || !matchDate) {
+    showAlert(t("err_fill"));
+    return;
+  }
+
   try {
-    if (id) await request("PATCH", `/reports/${id}`, body);
-    else await request("POST", "/reports", body);
+    await request("POST", "/match-reports", {
+      playerId,
+      opponent,
+      matchDate,
+      minutesPlayed,
+      goals,
+      assists,
+      sofascoreRating,
+    });
     closeModal("reportModal");
     renderReports();
+    showAlert(t("settings_saved"), "success");
   } catch (e) {
     showAlert(e.message);
   }
@@ -152,27 +173,8 @@ async function saveReport(id) {
 async function deleteReport(id) {
   if (!confirm(t("confirm_delete"))) return;
   try {
-    await request("DELETE", `/reports/${id}`);
+    await request("DELETE", `/match-reports/${id}`);
     renderReports();
-  } catch (e) {
-    showAlert(e.message);
-  }
-}
-
-async function seedGaloReports() {
-  const rep = {
-    playerName: "Hulk",
-    opponent: "Cruzeiro",
-    date: new Date().toISOString().split("T")[0],
-    minutes: 90,
-    rating: 8.5,
-    goals: 2,
-    assists: 0,
-  };
-  try {
-    await request("POST", "/reports", rep);
-    renderReports();
-    showAlert("Avaliação carregada com sucesso!", "success");
   } catch (e) {
     showAlert(e.message);
   }

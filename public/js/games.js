@@ -49,9 +49,9 @@ async function renderGames() {
             .map(
               (g) => `
             <tr>
-              <td>${g.date}</td>
+              <td>${g.date ? g.date.split("T")[0].split("-").reverse().join("/") : "-"}</td>
               <td><strong>${g.homeTeam}</strong> x ${g.awayTeam}</td>
-              <td><span class="badge badge-primary">${g.homeScore} - ${g.awayScore}</span></td>
+              <td><span class="badge badge-primary">${g.homeScore ?? "-"} - ${g.awayScore ?? "-"}</span></td>
               <td>
                 <div class="td-actions">
                   <button class="btn btn-info btn-sm js-view-game" data-id="${g._id}">Estatísticas</button>
@@ -139,7 +139,7 @@ async function openGameModal(id = null) {
       <div class="form-group"><label>Gols Casa</label><input type="number" id="gHomeScore" value="${g.homeScore ?? ""}"></div>
       <div class="form-group"><label>Gols Visitante</label><input type="number" id="gAwayScore" value="${g.awayScore ?? ""}"></div>
     </div>
-    <div class="form-group"><label>Data</label><input type="date" id="gDate" value="${g.date || ""}"></div>
+    <div class="form-group"><label>Data</label><input type="date" id="gDate" value="${g.date ? g.date.split("T")[0] : ""}"></div>
     <hr style="margin: 1rem 0; border-color: var(--border);">
     <h4 style="margin-bottom: 1rem; font-size: 0.9rem;">Estatísticas da Partida</h4>
     ${statsHtml}
@@ -168,12 +168,15 @@ async function saveGame(id) {
     away: Number(document.getElementById(`a_${f.id}`).value) || 0,
   }));
 
+  const hScoreVal = document.getElementById("gHomeScore").value;
+  const aScoreVal = document.getElementById("gAwayScore").value;
+
   const body = {
     homeTeam,
     awayTeam,
     date,
-    homeScore: Number(document.getElementById("gHomeScore").value) || 0,
-    awayScore: Number(document.getElementById("gAwayScore").value) || 0,
+    homeScore: hScoreVal !== "" ? Number(hScoreVal) : null,
+    awayScore: aScoreVal !== "" ? Number(aScoreVal) : null,
     stats,
   };
 
@@ -249,9 +252,9 @@ async function viewGameStats(id) {
         <div style="text-align: center; margin-bottom: 2rem;">
           <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1.5rem; color: #fff;">Visão geral da partida</h3>
           <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; font-weight: 900;">
-            <span style="color: #4ade80;">${data.homeTeam} ${data.homeScore}</span>
+            <span style="color: #4ade80;">${data.homeTeam} ${data.homeScore ?? "-"}</span>
             <span style="font-size: 1rem; color: #94a3b8;">X</span>
-            <span style="color: #818cf8;">${data.awayScore} ${data.awayTeam}</span>
+            <span style="color: #818cf8;">${data.awayScore ?? "-"} ${data.awayTeam}</span>
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
